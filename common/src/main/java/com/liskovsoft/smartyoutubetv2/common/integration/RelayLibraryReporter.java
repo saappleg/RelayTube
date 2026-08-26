@@ -16,13 +16,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Small, removable RelayTube integration that publishes the current subscription feed to Relay.
- * It sends only public card metadata for videos YouTube already returns to the signed-in viewer;
+ * Small, removable RelayTube integration that publishes the current subscription and Continue
+ * Watching feeds to Relay. It sends only public card metadata for videos YouTube returns to the signed-in viewer;
  * playback history, cookies, credentials, and account details are never shared.
  */
 public final class RelayLibraryReporter {
     private static final String RELAY_PACKAGE = "com.relayhome.launcher";
     private static final String ACTION_SUBSCRIPTIONS = "com.relaytube.action.SUBSCRIPTIONS";
+    private static final String ACTION_CONTINUE_WATCHING = "com.relaytube.action.CONTINUE_WATCHING";
     private static final String EXTRA_VIDEOS = "videos";
     private static final int MAX_VIDEOS = 24;
     private static final AtomicBoolean started = new AtomicBoolean(false);
@@ -36,10 +37,12 @@ public final class RelayLibraryReporter {
 
         final Context appContext = context.getApplicationContext();
         YouTubeServiceManager.instance().getContentService().getSubscriptionsObserve()
-                .subscribe(group -> publish(appContext, group), error -> { /* Relay is optional. */ });
+                .subscribe(group -> publish(appContext, group, ACTION_SUBSCRIPTIONS), error -> { /* Relay is optional. */ });
+        YouTubeServiceManager.instance().getContentService().getHistoryObserve()
+                .subscribe(group -> publish(appContext, group, ACTION_CONTINUE_WATCHING), error -> { /* Relay is optional. */ });
     }
 
-    private static void publish(Context context, MediaGroup group) {
+    private static void publish(Context context, MediaGroup group, String action) {
         List<Video> videos = VideoGroup.from(group).getVideos();
         if (videos == null) {
             return;
@@ -55,7 +58,11 @@ public final class RelayLibraryReporter {
                 item.put("id", video.videoId);
                 item.put("title", video.getTitleFull());
                 item.put("channel", video.getAuthor());
+                item.put("channel_id", video.channelId);
                 item.put("artwork", video.getCardImageUrl());
+                item.put("progress", Math.max(0f, Math.min(100f, video.percentWatched)) / 100f);
+                item.put("position_ms", video.getPositionMs());
+                item.put("duration_ms", video.getDurationMs());
                 payload.put(item);
             } catch (JSONException ignored) {
                 continue;
@@ -68,7 +75,7 @@ public final class RelayLibraryReporter {
         if (payload.length() == 0) {
             return;
         }
-        context.sendBroadcast(new Intent(ACTION_SUBSCRIPTIONS)
+        context.sendBroadcast(new Intent(action)
                 .setPackage(RELAY_PACKAGE)
                 .putExtra(EXTRA_VIDEOS, payload.toString()));
     }
