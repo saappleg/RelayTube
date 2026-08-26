@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 // The first letter of the flavor name must be in uppercase
-if (new File("${projectDir}/google-services.json").exists() && (getGradle().getStartParameter().getTaskRequests().toString().contains("Stbeta") ||
+if (new File("${projectDir}/google-services.json").exists() && !project.hasProperty("relayTubeSideBySide") && (getGradle().getStartParameter().getTaskRequests().toString().contains("Stbeta") ||
         getGradle().getStartParameter().getTaskRequests().toString().contains("Ststable"))) {
     // Google Services Gradle plugin (transforms google-services.json file)
     apply plugin: 'com.google.gms.google-services'
@@ -164,7 +164,9 @@ android {
             targetSdkVersion project.properties.compileSdkVersion
         }
         ststable {
-            applicationId "org.smarttube.stable"
+            // RelayTube test builds install alongside the user's existing SmartTube stable app.
+            // This keeps its login, settings, and data untouched during development.
+            applicationId "com.relaytube.stable"
             targetSdkVersion project.properties.compileSdkVersion
         }
         stfdroid {
