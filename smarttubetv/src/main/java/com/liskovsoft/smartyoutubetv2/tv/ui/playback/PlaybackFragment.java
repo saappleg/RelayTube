@@ -83,6 +83,7 @@ import com.liskovsoft.smartyoutubetv2.tv.ui.playback.other.BackboneQueueNavigato
 import com.liskovsoft.smartyoutubetv2.tv.ui.playback.other.VideoPlayerGlue;
 import com.liskovsoft.smartyoutubetv2.tv.ui.playback.other.VideoPlayerGlue.OnActionClickedListener;
 import com.liskovsoft.smartyoutubetv2.tv.ui.playback.previewtimebar.StoryboardSeekDataProvider;
+import com.liskovsoft.smartyoutubetv2.tv.integration.RelayPlaybackReporter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.chat.LiveChatView;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.time.DateTimeView;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.time.EndingTimeView;
@@ -640,6 +641,9 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, Helpers.toString(getVideo().getSecondTitleFull()));
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, getVideo().getCardImageUrl());
             metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDurationMs());
+
+            RelayPlaybackReporter.publish(
+                    getContext(), getVideo(), getPositionMs(), getDurationMs(), isPlaying());
 
             return metadataBuilder.build();
         });
