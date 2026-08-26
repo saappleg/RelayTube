@@ -23,7 +23,15 @@ recent-history provider.
 
 ## UI direction
 
-The RelayTube visual pass will keep SmartTube's fast Leanback navigation while improving the
-browse surface with rounded cards, clearer hierarchy, quieter chrome, dynamic artwork backdrops,
-and a less intrusive player-control layer. These changes remain separate from the integration
-bridge so they can be maintained independently of upstream SmartTube updates.
+RelayTube is moving toward Material Design 3 and Material You. Android 12+ uses the profile's
+Monet neutral/accent resources for the transitional Leanback backdrop; older TVs use RelayTube's
+violet fallback. The full migration keeps SmartTube's fast remote navigation and playback engine
+while replacing the browse surface progressively with a Compose Material 3 shell:
+
+1. Material You token layer and refined legacy card treatment.
+2. Compose Material 3 browse shell: dynamic color, hero artwork, rounded rails, and TV focus.
+3. Compose search, account, and settings surfaces.
+4. The player moves last, retaining SmartTube's stable ExoPlayer controls throughout.
+
+These changes remain separate from the integration bridge so they can be maintained independently
+of upstream SmartTube updates.
