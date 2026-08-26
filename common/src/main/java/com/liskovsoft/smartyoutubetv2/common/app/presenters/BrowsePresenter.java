@@ -35,6 +35,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.VideoMe
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.providers.channelgroup.ChannelGroupServiceWrapper;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.interfaces.SectionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.interfaces.VideoGroupPresenter;
+import com.liskovsoft.smartyoutubetv2.common.integration.RelayLibraryReporter;
 import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
 import com.liskovsoft.smartyoutubetv2.common.misc.AppDataSourceManager;
 import com.liskovsoft.smartyoutubetv2.common.misc.BrowseProcessorManager;
@@ -93,6 +94,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         mActions = new ArrayList<>();
 
         initSectionMappings();
+        RelayLibraryReporter.start(getContext());
         updateChannelSorting();
         updatePlaylistsStyle();
     }
