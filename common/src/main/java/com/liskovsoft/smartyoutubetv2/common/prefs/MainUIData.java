@@ -374,7 +374,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
 
     private void initColorSchemes() {
         mColorSchemes.add(new ColorScheme(
-                R.string.color_scheme_teal,
+                R.string.color_scheme_automatic,
                 null,
                 null,
                 null,

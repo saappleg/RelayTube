@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
@@ -46,6 +47,8 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
 
         View view = inflater.inflate(R.layout.icon_header_item, null);
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
+        view.setBackground(MaterialYouColors.roundedSurface(
+                viewGroup.getContext(), MaterialYouColors.surfaceVariant(viewGroup.getContext()), 22));
 
         return new ViewHolder(view);
     }
@@ -94,8 +97,35 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
     // mUnselectAlpha, and also assumes the xml inflation will return a RowHeaderView.
     @Override
     protected void onSelectLevelChanged(RowHeaderPresenter.ViewHolder holder) {
-        holder.view.setAlpha(mUnselectedAlpha + holder.getSelectLevel() *
-                (1.0f - mUnselectedAlpha));
+        float level = holder.getSelectLevel();
+        holder.view.setAlpha(mUnselectedAlpha + level * (1.0f - mUnselectedAlpha));
+        holder.view.setScaleX(1.0f + (0.035f * level));
+        holder.view.setScaleY(1.0f + (0.035f * level));
+        holder.view.setElevation(dp(holder.view.getContext(), 2 + (6 * level)));
+
+        int background = blend(
+                MaterialYouColors.surfaceVariant(holder.view.getContext()),
+                MaterialYouColors.accent(holder.view.getContext()), level);
+        holder.view.setBackground(MaterialYouColors.roundedSurface(
+                holder.view.getContext(), background, 22));
+
+        TextView label = holder.view.findViewById(R.id.header_label);
+        if (label != null) {
+            label.setTextColor(0xFFFFFFFF);
+        }
+    }
+
+    private static float dp(Context context, float value) {
+        return value * context.getResources().getDisplayMetrics().density;
+    }
+
+    private static int blend(int from, int to, float amount) {
+        float inverse = 1.0f - amount;
+        return android.graphics.Color.argb(
+                Math.round(android.graphics.Color.alpha(from) * inverse + android.graphics.Color.alpha(to) * amount),
+                Math.round(android.graphics.Color.red(from) * inverse + android.graphics.Color.red(to) * amount),
+                Math.round(android.graphics.Color.green(from) * inverse + android.graphics.Color.green(to) * amount),
+                Math.round(android.graphics.Color.blue(from) * inverse + android.graphics.Color.blue(to) * amount));
     }
 
     private final RequestListener<Drawable> mErrorListener = new RequestListener<Drawable>() {

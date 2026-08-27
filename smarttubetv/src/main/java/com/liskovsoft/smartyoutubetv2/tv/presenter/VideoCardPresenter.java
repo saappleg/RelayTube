@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.tv.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.util.Pair;
@@ -25,6 +26,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.utils.ClickbaitRemover;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.base.LongClickPresenter;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.GridFragmentHelper;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.complexcardview.ComplexImageCardView;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
@@ -48,14 +50,11 @@ public class VideoCardPresenter extends LongClickPresenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         Context context = parent.getContext();
 
-        mDefaultBackgroundColor =
-            ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardDefaultBackground));
+        mDefaultBackgroundColor = MaterialYouColors.surfaceVariant(context);
         mDefaultTextColor =
                 ContextCompat.getColor(context, R.color.card_default_text);
-        mSelectedBackgroundColor =
-                ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardSelectedBackground));
-        mSelectedTextColor =
-                ContextCompat.getColor(context, R.color.card_selected_text_grey);
+        mSelectedBackgroundColor = MaterialYouColors.accent(context);
+        mSelectedTextColor = Color.WHITE;
 
         mCardPreviewType = getCardPreviewType(context);
         mThumbQuality = getThumbQuality(context);

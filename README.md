@@ -1,3 +1,28 @@
+# RelayTube
+
+RelayTube is an experimental, side-by-side SmartTube compatibility build for
+[Relay Home](https://github.com/saappleg/Relay-Home-Launcher). It adds a removable
+Relay bridge for Continue Watching, subscription updates, active playback, rich video
+details, and direct video resume while exploring a Material 3/Monet-inspired TV UI.
+
+RelayTube installs as `com.relaytube.stable`, so it does not replace or modify a stock
+SmartTube installation. This beta is not an official SmartTube release. The integration
+code is intentionally isolated in reporter classes so UI improvements can remain useful
+upstream without requiring Relay support.
+
+## RelayTube beta notes
+
+- Android TV/Google TV only.
+- Install RelayTube, sign in, then enable SmartTube/RelayTube in Relay Home settings.
+- Relay Home receives metadata locally on the device; no Relay cloud account is required.
+- This is an early test build. Keep stock SmartTube installed until the beta is proven on
+  your device.
+
+## Upstream SmartTube documentation
+
+RelayTube is based on and remains licensed under the upstream SmartTube project. The
+original documentation follows.
+
 [<img src="images/badge_fdroid.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/app.smarttube.fdroid/)
 [<img src="images/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/yuliskov/SmartTube/releases)
 

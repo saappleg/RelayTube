@@ -20,6 +20,8 @@ public final class RelayPlaybackReporter {
     public static final String EXTRA_TITLE = "title";
     public static final String EXTRA_CHANNEL = "channel";
     public static final String EXTRA_ARTWORK_URL = "artwork_url";
+    public static final String EXTRA_DESCRIPTION = "description";
+    public static final String EXTRA_METADATA = "metadata";
     public static final String EXTRA_POSITION_MS = "position_ms";
     public static final String EXTRA_DURATION_MS = "duration_ms";
     public static final String EXTRA_PLAYING = "playing";
@@ -42,6 +44,8 @@ public final class RelayPlaybackReporter {
                 .putExtra(EXTRA_TITLE, video.getTitleFull())
                 .putExtra(EXTRA_CHANNEL, video.getAuthor())
                 .putExtra(EXTRA_ARTWORK_URL, video.getCardImageUrl())
+                .putExtra(EXTRA_DESCRIPTION, video.description)
+                .putExtra(EXTRA_METADATA, video.getSecondTitleFull() != null ? video.getSecondTitleFull().toString() : null)
                 .putExtra(EXTRA_POSITION_MS, positionMs)
                 .putExtra(EXTRA_DURATION_MS, durationMs)
                 .putExtra(EXTRA_PLAYING, playing);

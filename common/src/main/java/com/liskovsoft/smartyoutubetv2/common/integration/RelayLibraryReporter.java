@@ -60,6 +60,8 @@ public final class RelayLibraryReporter {
                 item.put("channel", video.getAuthor());
                 item.put("channel_id", video.channelId);
                 item.put("artwork", video.getCardImageUrl());
+                item.put("description", video.description);
+                item.put("metadata", video.getSecondTitleFull() != null ? video.getSecondTitleFull().toString() : null);
                 item.put("progress", Math.max(0f, Math.min(100f, video.percentWatched)) / 100f);
                 item.put("position_ms", video.getPositionMs());
                 item.put("duration_ms", video.getDurationMs());

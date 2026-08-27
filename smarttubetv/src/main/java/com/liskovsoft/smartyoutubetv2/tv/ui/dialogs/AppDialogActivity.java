@@ -77,7 +77,7 @@ public class AppDialogActivity extends MotherActivity {
         mIsBackPressed = false;
         super.onResume();
     }
-    
+
     private boolean handleNavigation(KeyEvent event) {
         if (event == null) {
             return false;
