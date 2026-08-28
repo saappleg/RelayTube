@@ -26,6 +26,9 @@ import android.view.accessibility.AccessibilityManager;
 import androidx.annotation.RestrictTo;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewConfigurationCompat;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
+
+import java.lang.ref.WeakReference;
 
 import static android.view.View.SYSTEM_UI_FLAG_LOW_PROFILE;
 import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
@@ -70,10 +73,10 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
 
     // The handler currently scheduled to show a tooltip, triggered by a hover
     // (there can be only one).
-    private static TooltipCompatHandler sPendingHandler;
+    private static WeakReference<TooltipCompatHandler> sPendingHandler = new WeakReference<>(null);
 
     // The handler currently showing a tooltip (there can be only one).
-    private static TooltipCompatHandler sActiveHandler;
+    private static WeakReference<TooltipCompatHandler> sActiveHandler = new WeakReference<>(null);
 
     /**
      * Set the tooltip text for the view.
@@ -92,14 +95,16 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
             return;
         }
 
-        if (sPendingHandler != null && sPendingHandler.mAnchor == view) {
+        TooltipCompatHandler pendingHandler = sPendingHandler.get();
+        if (pendingHandler != null && pendingHandler.mAnchor == view) {
             setPendingHandler(null);
         }
 
-        boolean sameAnchor = sActiveHandler != null && sActiveHandler.mAnchor == view;
+        TooltipCompatHandler activeHandler = sActiveHandler.get();
+        boolean sameAnchor = activeHandler != null && activeHandler.mAnchor == view;
 
         if (sameAnchor) {
-            sActiveHandler.hide();
+            activeHandler.hide();
         }
 
         // MOD: listener already added in ControlBarPresenter
@@ -172,6 +177,8 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        v.setBackground(MaterialYouColors.playerControlSurface(v.getContext(), hasFocus));
+        v.setAlpha(1f);
         if (hasFocus) {
             // Wait till probable animation complete (button is moving)
             setPendingHandler(this);
@@ -195,10 +202,11 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
             return;
         }
         setPendingHandler(null);
-        if (sActiveHandler != null) {
-            sActiveHandler.hide();
+        TooltipCompatHandler activeHandler = sActiveHandler.get();
+        if (activeHandler != null) {
+            activeHandler.hide();
         }
-        sActiveHandler = this;
+        sActiveHandler = new WeakReference<>(this);
 
         mFromTouch = fromTouch;
         mPopup = new TooltipPopup(mAnchor.getContext());
@@ -220,8 +228,8 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
     }
 
     void hide() {
-        if (sActiveHandler == this) {
-            sActiveHandler = null;
+        if (sActiveHandler.get() == this) {
+            sActiveHandler.clear();
             if (mPopup != null) {
                 mPopup.hide();
                 mPopup = null;
@@ -231,19 +239,20 @@ public class TooltipCompatHandler implements View.OnLongClickListener, View.OnHo
                 Log.e(TAG, "sActiveHandler.mPopup == null");
             }
         }
-        if (sPendingHandler == this) {
+        if (sPendingHandler.get() == this) {
             setPendingHandler(null);
         }
         mAnchor.removeCallbacks(mHideRunnable);
     }
 
     private static void setPendingHandler(TooltipCompatHandler handler) {
-        if (sPendingHandler != null) {
-            sPendingHandler.cancelPendingShow();
+        TooltipCompatHandler pendingHandler = sPendingHandler.get();
+        if (pendingHandler != null) {
+            pendingHandler.cancelPendingShow();
         }
-        sPendingHandler = handler;
-        if (sPendingHandler != null) {
-            sPendingHandler.scheduleShow();
+        sPendingHandler = new WeakReference<>(handler);
+        if (handler != null) {
+            handler.scheduleShow();
         }
     }
 

@@ -16,6 +16,7 @@
 
 package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tooltips;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -55,10 +56,12 @@ class TooltipPopup {
     private final int[] mTmpAnchorPos = new int[2];
     private final int[] mTmpAppPos = new int[2];
 
+    @SuppressLint("InflateParams") // WindowManager supplies the parent when the popup is shown.
     TooltipPopup(Context context) {
         mContext = context;
 
-        mContentView = LayoutInflater.from(mContext).inflate(R.layout.abc_tooltip, null);
+        // WindowManager owns this view, so there is intentionally no XML parent at inflation time.
+        mContentView = LayoutInflater.from(mContext).inflate(R.layout.abc_tooltip, null, false);
         mMessageView = (TextView) mContentView.findViewById(R.id.message);
 
         mLayoutParams.setTitle(getClass().getSimpleName());
@@ -143,15 +146,10 @@ class TooltipPopup {
             // No meaningful display frame, the anchor view is probably in a subpanel
             // (such as a popup window). Use the screen frame as a reasonable approximation.
             final Resources res = mContext.getResources();
-            final int statusBarHeight;
-            int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId != 0) {
-                statusBarHeight = res.getDimensionPixelSize(resourceId);
-            } else {
-                statusBarHeight = 0;
-            }
             final DisplayMetrics metrics = res.getDisplayMetrics();
-            mTmpDisplayFrame.set(0, statusBarHeight, metrics.widthPixels, metrics.heightPixels);
+            // Android TV runs the player fullscreen. Avoid reflecting an internal framework
+            // dimension that is not part of the public SDK and is absent on many TV builds.
+            mTmpDisplayFrame.set(0, 0, metrics.widthPixels, metrics.heightPixels);
         }
         appView.getLocationOnScreen(mTmpAppPos);
 

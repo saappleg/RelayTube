@@ -240,7 +240,7 @@ class PlaybackControlsPresenter extends ControlBarPresenter {
 
     public void setProgressColor(ViewHolder vh, @ColorInt int color) {
         Drawable drawable = new ClipDrawable(new ColorDrawable(color),
-                Gravity.LEFT, ClipDrawable.HORIZONTAL);
+                Gravity.START, ClipDrawable.HORIZONTAL);
         ((LayerDrawable) vh.mProgressBar.getProgressDrawable())
                 .setDrawableByLayerId(android.R.id.progress, drawable);
     }

@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -24,6 +23,8 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
+def relayTubeVersionCode = System.getenv("RELAYTUBE_VERSION_CODE")?.toInteger() ?: 2421
+def relayTubeVersionName = System.getenv("RELAYTUBE_VERSION_NAME") ?: "32.31"
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
@@ -31,8 +32,11 @@ if (keystorePropertiesFile.exists()) {
 }
 
 // The first letter of the flavor name must be in uppercase
-if (new File("${projectDir}/google-services.json").exists() && !project.hasProperty("relayTubeSideBySide") && (getGradle().getStartParameter().getTaskRequests().toString().contains("Stbeta") ||
-        getGradle().getStartParameter().getTaskRequests().toString().contains("Ststable"))) {
+// Firebase configuration belongs to the upstream SmartTube beta package. RelayTube uses a
+// distinct side-by-side application id, so applying that configuration to it makes debug
+// builds fail before the UI can even be tested.
+if (new File("${projectDir}/google-services.json").exists() && !project.hasProperty("relayTubeSideBySide") &&
+        getGradle().getStartParameter().getTaskRequests().toString().contains("Stbeta")) {
     // Google Services Gradle plugin (transforms google-services.json file)
     apply plugin: 'com.google.gms.google-services'
 
@@ -57,8 +61,8 @@ android {
         applicationId "app.smarttube"
         minSdkVersion project.properties.minSdkVersion
         targetSdkVersion project.properties.targetSdkVersion
-        versionCode 2421
-        versionName "32.31"
+        versionCode relayTubeVersionCode
+        versionName relayTubeVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
 

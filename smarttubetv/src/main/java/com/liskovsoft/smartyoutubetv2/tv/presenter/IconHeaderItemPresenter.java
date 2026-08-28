@@ -1,8 +1,10 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +47,10 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDefaultIcon = new ColorDrawable(ContextCompat.getColor(viewGroup.getContext(), R.color.lb_grey));
 
-        View view = inflater.inflate(R.layout.icon_header_item, null);
+        View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
         view.setBackground(MaterialYouColors.roundedSurface(
-                viewGroup.getContext(), MaterialYouColors.surfaceVariant(viewGroup.getContext()), 22));
+                viewGroup.getContext(), Color.TRANSPARENT, 22));
 
         return new ViewHolder(view);
     }
@@ -65,6 +67,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
 
         View rootView = viewHolder.view;
         rootView.setFocusable(true);
+        rootView.setContentDescription(headerItem.getName());
 
         ImageView iconView = rootView.findViewById(R.id.header_icon);
         if (iconView != null) {
@@ -101,11 +104,15 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         holder.view.setAlpha(mUnselectedAlpha + level * (1.0f - mUnselectedAlpha));
         holder.view.setScaleX(1.0f + (0.035f * level));
         holder.view.setScaleY(1.0f + (0.035f * level));
-        holder.view.setElevation(dp(holder.view.getContext(), 2 + (6 * level)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.view.setElevation(dp(holder.view.getContext(), 2 + (6 * level)));
+        }
 
-        int background = blend(
-                MaterialYouColors.surfaceVariant(holder.view.getContext()),
-                MaterialYouColors.accent(holder.view.getContext()), level);
+        int selectedSurface = MaterialYouColors.blend(
+                MaterialYouColors.surfaceContainerHigh(holder.view.getContext()),
+                MaterialYouColors.accent(holder.view.getContext()),
+                0.24f);
+        int background = MaterialYouColors.withAlpha(selectedSurface, Math.round(0xF2 * level));
         holder.view.setBackground(MaterialYouColors.roundedSurface(
                 holder.view.getContext(), background, 22));
 
@@ -117,15 +124,6 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
 
     private static float dp(Context context, float value) {
         return value * context.getResources().getDisplayMetrics().density;
-    }
-
-    private static int blend(int from, int to, float amount) {
-        float inverse = 1.0f - amount;
-        return android.graphics.Color.argb(
-                Math.round(android.graphics.Color.alpha(from) * inverse + android.graphics.Color.alpha(to) * amount),
-                Math.round(android.graphics.Color.red(from) * inverse + android.graphics.Color.red(to) * amount),
-                Math.round(android.graphics.Color.green(from) * inverse + android.graphics.Color.green(to) * amount),
-                Math.round(android.graphics.Color.blue(from) * inverse + android.graphics.Color.blue(to) * amount));
     }
 
     private final RequestListener<Drawable> mErrorListener = new RequestListener<Drawable>() {

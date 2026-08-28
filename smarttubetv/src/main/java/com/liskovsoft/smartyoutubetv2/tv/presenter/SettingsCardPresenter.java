@@ -28,15 +28,16 @@ public class SettingsCardPresenter extends Presenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         Context context = parent.getContext();
 
-        mDefaultBackgroundColor = MaterialYouColors.surfaceVariant(context);
+        mDefaultBackgroundColor = MaterialYouColors.surfaceContainerHigh(context);
         mDefaultTextColor =
                 ContextCompat.getColor(context, R.color.card_default_text);
-        mSelectedBackgroundColor = MaterialYouColors.accent(context);
+        mSelectedBackgroundColor = MaterialYouColors.focusedCardSurface(context);
         mSelectedTextColor = Color.WHITE;
 
         @SuppressLint("InflateParams")
         View container = LayoutInflater.from(context).inflate(R.layout.settings_card, null);
-        container.setBackground(MaterialYouColors.roundedSurface(context, mDefaultBackgroundColor, 20));
+        container.setBackground(MaterialYouColors.roundedSurface(
+                context, mDefaultBackgroundColor, 20));
         //if (VERSION.SDK_INT >= 23 && MainUIData.instance(context).isUiTweakEnabled(MainUIData.UI_TWEAK_ROUNDED_CORNERS)) {
         //    container.setForeground(ContextCompat.getDrawable(context, R.drawable.lb_card_outline));
         //}
@@ -50,7 +51,19 @@ public class SettingsCardPresenter extends Presenter {
         container.setOnFocusChangeListener((v, hasFocus) -> {
             int backgroundColor = hasFocus ? mSelectedBackgroundColor : mDefaultBackgroundColor;
             int textColor = hasFocus ? mSelectedTextColor : mDefaultTextColor;
-            v.setBackground(MaterialYouColors.roundedSurface(context, backgroundColor, 20));
+            v.setBackground(MaterialYouColors.roundedSurface(
+                    context, backgroundColor, 20));
+            if (VERSION.SDK_INT >= 23) {
+                v.setForeground(MaterialYouColors.outlinedSurface(
+                        context,
+                        Color.TRANSPARENT,
+                        20,
+                        hasFocus ? MaterialYouColors.focusedCardOutline(context) : Color.TRANSPARENT,
+                        hasFocus ? 2.0f : 0.0f));
+            }
+            if (VERSION.SDK_INT >= 21) {
+                v.setElevation(hasFocus ? dp(context, 10) : dp(context, 2));
+            }
             
             textView.setTextColor(textColor);
 
@@ -71,6 +84,7 @@ public class SettingsCardPresenter extends Presenter {
         TextView textView = viewHolder.view.findViewById(R.id.settings_title);
 
         textView.setText(settingsItem.title);
+        viewHolder.view.setContentDescription(settingsItem.title);
 
         if (settingsItem.imageResId > 0) {
             Context context = viewHolder.view.getContext();
@@ -90,5 +104,9 @@ public class SettingsCardPresenter extends Presenter {
 
     protected float getCardTextScrollSpeed(Context context) {
         return MainUIData.instance(context).getCardTextScrollSpeed();
+    }
+
+    private static float dp(Context context, float value) {
+        return value * context.getResources().getDisplayMetrics().density;
     }
 }

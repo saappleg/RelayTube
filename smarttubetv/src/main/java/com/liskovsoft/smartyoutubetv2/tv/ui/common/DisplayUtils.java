@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -73,11 +72,7 @@ public class DisplayUtils {
 
     public static long getDuration(String videoUrl) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            mmr.setDataSource(videoUrl, new HashMap<>());
-        } else {
-            mmr.setDataSource(videoUrl);
-        }
+        mmr.setDataSource(videoUrl, new HashMap<>());
         return Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
     }
 }

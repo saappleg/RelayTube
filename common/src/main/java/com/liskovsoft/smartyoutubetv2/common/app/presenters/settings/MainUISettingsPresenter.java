@@ -1,7 +1,11 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.settings;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.smartyoutubetv2.common.R;
@@ -16,6 +20,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData.ColorScheme;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.utils.ClickbaitRemover;
+import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,7 @@ public class MainUISettingsPresenter extends BasePresenter<Void> {
     private final Runnable mOnFinish = () -> {
         if (mRestartApp) {
             mRestartApp = false;
-            MessageHelpers.showLongMessage(getContext(), R.string.msg_restart_app);
+            Utils.restartTheApp(getContext());
         }
     };
 
@@ -99,7 +104,9 @@ public class MainUISettingsPresenter extends BasePresenter<Void> {
 
         for (ColorScheme colorScheme : colorSchemes) {
             styleOptions.add(UiOptionItem.from(
-                    getContext().getString(colorScheme.nameResId),
+                    colorSchemeTitle(colorScheme),
+                    colorScheme.nameResId == R.string.color_scheme_automatic ?
+                            getContext().getString(R.string.color_scheme_automatic_description) : null,
                     option -> {
                         mMainUIData.setColorScheme(colorScheme);
                         mRestartApp = true;
@@ -108,6 +115,30 @@ public class MainUISettingsPresenter extends BasePresenter<Void> {
         }
 
         return styleOptions;
+    }
+
+    private CharSequence colorSchemeTitle(ColorScheme colorScheme) {
+        int previewColor;
+        if (colorScheme.nameResId == R.string.color_scheme_automatic) {
+            previewColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ?
+                    getContext().getColor(android.R.color.system_accent1_500) : Color.rgb(240, 74, 72);
+        } else if (colorScheme.nameResId == R.string.color_scheme_red) {
+            previewColor = Color.rgb(240, 74, 72);
+        } else if (colorScheme.nameResId == R.string.color_scheme_teal_oled) {
+            previewColor = Color.rgb(0, 175, 165);
+        } else if (colorScheme.nameResId == R.string.color_scheme_dark_blue ||
+                colorScheme.nameResId == R.string.color_scheme_dark_blue_oled) {
+            previewColor = Color.rgb(51, 181, 229);
+        } else if (colorScheme.nameResId == R.string.color_scheme_dark_grey_monochrome) {
+            previewColor = Color.rgb(190, 190, 194);
+        } else {
+            previewColor = Color.rgb(176, 118, 255);
+        }
+
+        SpannableStringBuilder title = new SpannableStringBuilder("●  ");
+        title.append(getContext().getString(colorScheme.nameResId));
+        title.setSpan(new ForegroundColorSpan(previewColor), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return title;
     }
 
     private void appendCardPreviews(AppDialogPresenter settingsPresenter) {

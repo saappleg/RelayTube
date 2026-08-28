@@ -34,7 +34,9 @@
                 android:layout_gravity="top"
                 android:adjustViewBounds="true"
                 android:layout_marginEnd="@dimen/lb_playback_transport_image_margin_end"
-                android:scaleType="fitStart" />
+                android:scaleType="fitStart"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no" />
 
             <FrameLayout
                 android:id="@+id/description_dock"
@@ -75,6 +77,7 @@
         android:orientation="vertical"
         android:paddingStart="?attr/browsePaddingStart"
         android:paddingEnd="?attr/browsePaddingEnd"
+        android:importantForAccessibility="yes"
         android:clipChildren="false"
         android:clipToPadding="false" >
 
@@ -114,6 +117,7 @@
                             android:layout_height="wrap_content"
                             android:layoutDirection="ltr"
                             android:layout_gravity="bottom"
+                            android:layout_toEndOf="@id/controls_dock"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:focusable="false" >
@@ -157,6 +161,7 @@
                             android:layout_height="wrap_content"
                             android:layoutDirection="ltr"
                             android:layout_gravity="bottom"
+                            android:layout_toEndOf="@id/secondary_controls_dock"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:focusable="false" >

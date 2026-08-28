@@ -372,6 +372,7 @@ public final class SeekBar extends View {
                     onStartTrackingTouch();
                     trackTouchEvent(event);
                     onStopTrackingTouch();
+                    performClick();
                 }
                 // ProgressBar doesn't know to repaint the thumb drawable
                 // in its inactive state when the touch stops (because the
@@ -387,6 +388,12 @@ public final class SeekBar extends View {
                 invalidate(); // see above explanation
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
         return true;
     }
 

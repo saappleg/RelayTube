@@ -13,6 +13,11 @@
  */
 package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tooltips;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +31,7 @@ import androidx.leanback.widget.PlaybackControlsRow;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.PresenterSelector;
 import com.liskovsoft.smartyoutubetv2.tv.ui.playback.actions.PaddingAction;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 
 /**
  * Displays primary and secondary controls for a {@link PlaybackControlsRow}.
@@ -95,6 +101,13 @@ public class ControlButtonPresenterSelector extends PresenterSelector {
         public ViewHolder onCreateViewHolder(ViewGroup parent) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(mLayoutResourceId, parent, false);
+            ImageView button = v.findViewById(R.id.button);
+            if (button != null) {
+                button.setImageDrawable(null);
+                button.setBackground(MaterialYouColors.playerControlSurface(parent.getContext()));
+                button.setImageAlpha(255);
+                button.setAlpha(1f);
+            }
             return new ActionViewHolder(v);
         }
 
@@ -105,7 +118,15 @@ public class ControlButtonPresenterSelector extends PresenterSelector {
             Action action = (Action) item;
             ActionViewHolder vh = (ActionViewHolder) viewHolder;
 
+            vh.view.setAlpha(1f);
             vh.mIcon.setImageDrawable(action.getIcon());
+            if (isColorArtwork(action.getIcon())) {
+                vh.mIcon.clearColorFilter();
+            } else {
+                vh.mIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            }
+            vh.mIcon.setAlpha(1f);
+            vh.mIcon.setImageAlpha(255);
             if (action instanceof PaddingAction) {
                 int padding = ((PaddingAction) action).getPadding();
                 if (padding > 0) {
@@ -136,6 +157,7 @@ public class ControlButtonPresenterSelector extends PresenterSelector {
         @Override
         public void onUnbindViewHolder(ViewHolder viewHolder) {
             ActionViewHolder vh = (ActionViewHolder) viewHolder;
+            vh.mIcon.clearColorFilter();
             vh.mIcon.setImageDrawable(null);
             if (vh.mLabel != null) {
                 vh.mLabel.setText(null);
@@ -152,6 +174,35 @@ public class ControlButtonPresenterSelector extends PresenterSelector {
         public void setOnLongClickListener(ViewHolder viewHolder,
                                        View.OnLongClickListener listener) {
             ((ActionViewHolder) viewHolder).mFocusableView.setOnLongClickListener(listener);
+        }
+
+        /** Keep channel art and colored state icons intact; lift only monochrome glyphs. */
+        private static boolean isColorArtwork(Drawable drawable) {
+            if (!(drawable instanceof BitmapDrawable)) {
+                return false;
+            }
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            if (bitmap == null || bitmap.isRecycled()) {
+                return false;
+            }
+            int stepX = Math.max(1, bitmap.getWidth() / 12);
+            int stepY = Math.max(1, bitmap.getHeight() / 12);
+            for (int y = 0; y < bitmap.getHeight(); y += stepY) {
+                for (int x = 0; x < bitmap.getWidth(); x += stepX) {
+                    int pixel = bitmap.getPixel(x, y);
+                    if (Color.alpha(pixel) < 48) {
+                        continue;
+                    }
+                    int max = Math.max(Color.red(pixel),
+                            Math.max(Color.green(pixel), Color.blue(pixel)));
+                    int min = Math.min(Color.red(pixel),
+                            Math.min(Color.green(pixel), Color.blue(pixel)));
+                    if (max - min >= 28) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

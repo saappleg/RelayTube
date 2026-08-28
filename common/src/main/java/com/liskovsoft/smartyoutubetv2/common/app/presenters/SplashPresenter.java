@@ -115,9 +115,16 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     }
 
     private void runBackgroundTasks() {
-        YouTubeServiceManager.instance().refreshCacheIfNeeded(); // warm up player engine
+        // A direct video launch can still be resolving YouTube's integrity/signature
+        // challenge when this delayed task fires. Warming the same media service and
+        // refreshing launcher channels at that point competes with the critical
+        // playback path. Browse initialization will schedule these jobs again.
+        boolean playerInForeground = getViewManager().isPlayerInForeground();
+        if (!playerInForeground) {
+            YouTubeServiceManager.instance().refreshCacheIfNeeded(); // warm up player engine
+            Utils.updateChannels(getContext());
+        }
         enableHistoryIfNeeded();
-        Utils.updateChannels(getContext());
         GDriveBackupWorker.schedule(getContext());
         LocalDriveBackupWorker.schedule(getContext());
     }
@@ -137,6 +144,12 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     }
 
     private void checkForUpdates() {
+        // Never let a release-manifest download contend with a cold video start.
+        // A browse view initialization will schedule the automatic check again.
+        if (getViewManager().isPlayerInForeground()) {
+            return;
+        }
+
         BootDialogPresenter updatePresenter = BootDialogPresenter.instance(getContext());
         updatePresenter.start();
     }

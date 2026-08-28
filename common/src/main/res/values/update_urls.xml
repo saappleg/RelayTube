@@ -4,4 +4,12 @@
         <!-- NOTE: Real urls moved to the flavor's folder -->
         <!--<item>https://github.com/yuliskov/SmartTubeNext/releases/download/latest/smarttube_beta.json</item>-->
     </string-array>
+    <!-- Defaults keep non-Relay flavors on their normal update feed. The ststable flavor overrides
+         these with RelayTube URLs. -->
+    <string-array name="relay_update_urls_stable">
+        <item>https://github.com/yuliskov/SmartTubeNext/releases/download/latest/smarttube_stable2.json</item>
+    </string-array>
+    <string-array name="relay_update_urls_beta">
+        <item>https://github.com/yuliskov/SmartTubeNext/releases/download/latest/smarttube_beta2.json</item>
+    </string-array>
 </resources>

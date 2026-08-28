@@ -50,6 +50,7 @@ import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tweaks.Contr
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tweaks.ControlBarPresenter.OnControlSelectedListener;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.seekpreview.ThumbsBar;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.widget.OnActionLongClickedListener;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -453,6 +454,9 @@ public class PlaybackTransportRowPresenter extends PlaybackRowPresenter {
                 }
             });
             mProgressBar = (SeekBar) rootView.findViewById(R.id.playback_progress);
+            mProgressBar.setProgressColor(MaterialYouColors.accent(rootView.getContext()));
+            mProgressBar.setSecondaryProgressColor(MaterialYouColors.blend(
+                    MaterialYouColors.surfaceVariant(rootView.getContext()), Color.WHITE, 0.38f));
             mProgressBar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

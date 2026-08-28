@@ -65,6 +65,7 @@ public class SponsorBlockData {
         mSegmentLocalizedMapping.put(SponsorSegment.CATEGORY_PREVIEW_RECAP, R.string.content_block_preview_recap);
         mSegmentLocalizedMapping.put(SponsorSegment.CATEGORY_POI_HIGHLIGHT, R.string.content_block_highlight);
         mSegmentLocalizedMapping.put(SponsorSegment.CATEGORY_FILLER, R.string.content_block_filler);
+        mSegmentLocalizedMapping.put(SponsorSegment.CATEGORY_EXCLUSIVE_ACCESS, R.string.content_block_exclusive_access);
     }
 
     private void initColorMapping() {
@@ -78,6 +79,7 @@ public class SponsorBlockData {
         mSegmentColorMapping.put(SponsorSegment.CATEGORY_PREVIEW_RECAP, R.color.light_blue);
         mSegmentColorMapping.put(SponsorSegment.CATEGORY_POI_HIGHLIGHT, R.color.light_pink);
         mSegmentColorMapping.put(SponsorSegment.CATEGORY_FILLER, R.color.electric_violet);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_EXCLUSIVE_ACCESS, R.color.red);
     }
 
     private void initAllCategories() {
@@ -91,6 +93,7 @@ public class SponsorBlockData {
         mAllCategories.add(SponsorSegment.CATEGORY_PREVIEW_RECAP);
         mAllCategories.add(SponsorSegment.CATEGORY_POI_HIGHLIGHT);
         mAllCategories.add(SponsorSegment.CATEGORY_FILLER);
+        mAllCategories.add(SponsorSegment.CATEGORY_EXCLUSIVE_ACCESS);
     }
 
     public Integer getLocalizedRes(String segmentCategory) {
@@ -295,7 +298,8 @@ public class SponsorBlockData {
             if (getAction(segmentCategory) == ACTION_UNDEFINED) {
                 // Disable filler category by default
                 // This category is very extreme and is recommended to be disabled by default because of that.
-                if (SponsorSegment.CATEGORY_FILLER.equals(segmentCategory)) {
+                if (SponsorSegment.CATEGORY_FILLER.equals(segmentCategory) ||
+                        SponsorSegment.CATEGORY_EXCLUSIVE_ACCESS.equals(segmentCategory)) {
                     mActions.add(SegmentAction.from(segmentCategory, ACTION_DO_NOTHING));
                 } else {
                     mActions.add(SegmentAction.from(segmentCategory, ACTION_SKIP_WITH_TOAST));
