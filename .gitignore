@@ -68,5 +68,6 @@ tmp/
 /captures
 .externalNativeBuild
 fabric.properties
+keystore.properties
 *BAK.java
 hs_err_pid*.log
