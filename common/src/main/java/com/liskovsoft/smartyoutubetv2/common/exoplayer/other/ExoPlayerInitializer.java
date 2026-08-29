@@ -134,8 +134,10 @@ public class ExoPlayerInitializer {
             case PlayerData.BUFFER_LOW:
                 minBufferMs = 5_000; // LIVE fix
                 maxBufferMs = 5_000; // LIVE fix
-                //bufferForPlaybackMs = 1_000;
-                //bufferForPlaybackAfterRebufferMs = 1_000;
+                // Low buffer is the explicit fast-start mode. Keep the smaller steady
+                // buffer, but also lower the amount needed before initial playback.
+                bufferForPlaybackMs = 1_000;
+                bufferForPlaybackAfterRebufferMs = 2_000;
                 break;
         }
 

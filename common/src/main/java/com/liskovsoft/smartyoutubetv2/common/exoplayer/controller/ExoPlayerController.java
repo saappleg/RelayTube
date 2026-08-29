@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.common.exoplayer.controller;
 import android.content.Context;
 import android.os.Build;
 import android.os.Build.VERSION;
+import android.os.SystemClock;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -54,6 +55,11 @@ public class ExoPlayerController implements Player.EventListener {
     private VolumeBooster mVolumeBooster;
     private boolean mIsEnded;
     private Runnable mOnVideoLoaded;
+    private long mPrepareStartedAtMs;
+    private long mFirstBufferingAtMs;
+    private long mFirstTracksAtMs;
+    private long mFirstLoadingFinishedAtMs;
+    private boolean mStartupReported;
 
     public ExoPlayerController(Context context, PlayerEventListener eventListener) {
         PlayerTweaksData playerTweaksData = PlayerTweaksData.instance(context);
@@ -122,6 +128,11 @@ public class ExoPlayerController implements Player.EventListener {
     }
 
     private void openMediaSource(MediaSource mediaSource) {
+        mPrepareStartedAtMs = SystemClock.elapsedRealtime();
+        mFirstBufferingAtMs = 0;
+        mFirstTracksAtMs = 0;
+        mFirstLoadingFinishedAtMs = 0;
+        mStartupReported = false;
         resetPlayerState(); // fixes occasional video artifacts and problems with quality switching
         setQualityInfo("");
 
@@ -129,6 +140,7 @@ public class ExoPlayerController implements Player.EventListener {
         mTrackSelectorManager.invalidate();
         mOnSourceChanged = true;
         mEventListener.onSourceChanged(getVideo());
+        Log.d(TAG, "Playback startup: prepare requested");
         mPlayer.prepare(mediaSource);
     }
 
@@ -276,6 +288,10 @@ public class ExoPlayerController implements Player.EventListener {
 
     @Override
     public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+        if (mPrepareStartedAtMs > 0 && mFirstTracksAtMs == 0) {
+            mFirstTracksAtMs = SystemClock.elapsedRealtime();
+            Log.d(TAG, "Playback startup: tracks in " + elapsedSincePrepare(mFirstTracksAtMs) + "ms");
+        }
         Log.d(TAG, "onTracksChanged: start: groups length: " + trackGroups.length);
 
         if (trackGroups.length == 0) {
@@ -324,7 +340,7 @@ public class ExoPlayerController implements Player.EventListener {
 
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-        Log.e(TAG, "onPlayerError: " + error);
+        Log.e(TAG, "Playback startup: failed after " + elapsedSincePrepare(SystemClock.elapsedRealtime()) + "ms: " + error);
 
         // NOTE: Player is released at this point. So, there is no sense to restore the playback here.
 
@@ -343,6 +359,31 @@ public class ExoPlayerController implements Player.EventListener {
         boolean isPausePressed = Player.STATE_READY == playbackState && !playWhenReady;
         boolean isPlaybackEnded = Player.STATE_ENDED == playbackState && playWhenReady;
         boolean isBuffering = Player.STATE_BUFFERING == playbackState && playWhenReady;
+
+        if (isBuffering && mPrepareStartedAtMs > 0 && mFirstBufferingAtMs == 0) {
+            mFirstBufferingAtMs = SystemClock.elapsedRealtime();
+            Log.d(TAG, "Playback startup: buffering in " + elapsedSincePrepare(mFirstBufferingAtMs) + "ms");
+        }
+
+        if (isPlayPressed && mPrepareStartedAtMs > 0 && !mStartupReported) {
+            mStartupReported = true;
+            long now = SystemClock.elapsedRealtime();
+            String buffering = mFirstBufferingAtMs > 0
+                    ? String.valueOf(mFirstBufferingAtMs - mPrepareStartedAtMs)
+                    : "not observed";
+            String tracks = mFirstTracksAtMs > 0
+                    ? String.valueOf(mFirstTracksAtMs - mPrepareStartedAtMs)
+                    : "not observed";
+            String loadingFinished = mFirstLoadingFinishedAtMs > 0
+                    ? String.valueOf(mFirstLoadingFinishedAtMs - mPrepareStartedAtMs)
+                    : "still loading";
+            long bufferedAheadMs = mPlayer != null
+                    ? Math.max(0, mPlayer.getBufferedPosition() - mPlayer.getCurrentPosition())
+                    : 0;
+            Log.d(TAG, "Playback startup: ready in " + elapsedSincePrepare(now)
+                    + "ms (buffering=" + buffering + "ms, tracks=" + tracks
+                    + "ms, loading=" + loadingFinished + "ms, bufferedAhead=" + bufferedAheadMs + "ms)");
+        }
 
         // Fix chapters (seek and play) after playback ends
         if (isPlaybackEnded && mIsEnded) {
@@ -363,6 +404,19 @@ public class ExoPlayerController implements Player.EventListener {
         if (getPositionMs() < getDurationMs()) {
             mIsEnded = false;
         }
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+        if (!isLoading && mPrepareStartedAtMs > 0 && mFirstLoadingFinishedAtMs == 0) {
+            mFirstLoadingFinishedAtMs = SystemClock.elapsedRealtime();
+            Log.d(TAG, "Playback startup: initial loading finished in "
+                    + elapsedSincePrepare(mFirstLoadingFinishedAtMs) + "ms");
+        }
+    }
+
+    private long elapsedSincePrepare(long nowMs) {
+        return mPrepareStartedAtMs > 0 ? Math.max(0, nowMs - mPrepareStartedAtMs) : 0;
     }
 
     @Override
