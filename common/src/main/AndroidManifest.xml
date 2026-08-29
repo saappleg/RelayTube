@@ -33,6 +33,19 @@
     <!-- Add requestLegacyExternalStorage to fix unavailable storage on Android 10 (doesn't work on Android 11) -->
     <!-- More info: https://stackoverflow.com/questions/63364476/requestlegacyexternalstorage-is-not-working-in-android-11-api-30 -->
     <application android:requestLegacyExternalStorage="true">
+        <provider
+            android:name="com.liskovsoft.smartyoutubetv2.common.integration.RelayProfileBridgeProvider"
+            android:authorities="${applicationId}.relayprofiles"
+            android:exported="true" />
+        <receiver
+            android:name="com.liskovsoft.smartyoutubetv2.common.integration.RelayProfileBridgeReceiver"
+            android:exported="true"
+            android:permission="${applicationId}.ACCESS_VIDEO_DATA">
+            <intent-filter>
+                <action android:name="com.relaytube.action.SELECT_PROFILE" />
+                <action android:name="com.relaytube.action.REQUEST_PROFILES" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="com.liskovsoft.smartyoutubetv2.common.misc.RemoteControlReceiver"
             android:enabled="true"
