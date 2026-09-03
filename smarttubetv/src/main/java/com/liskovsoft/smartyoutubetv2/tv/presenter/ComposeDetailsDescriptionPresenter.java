@@ -1,7 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,6 +10,7 @@ import androidx.compose.ui.platform.ComposeView;
 import androidx.leanback.widget.Presenter;
 
 import com.liskovsoft.smartyoutubetv2.tv.ui.compose.RelayComposeViews;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 
 /**
  * Details presenter that keeps the Leanback presenter contract while rendering its content in
@@ -80,7 +80,7 @@ public class ComposeDetailsDescriptionPresenter extends Presenter {
 
     private static TextView createTextView(Context context, int textSize) {
         TextView textView = new TextView(context);
-        textView.setTextColor(Color.WHITE);
+        textView.setTextColor(MaterialYouColors.onSurface(context));
         textView.setTextSize(textSize);
         return textView;
     }

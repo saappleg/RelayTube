@@ -10,6 +10,7 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.search.vineyard.Tag;
 import com.liskovsoft.smartyoutubetv2.common.app.models.search.vineyard.User;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.base.LongClickPresenter;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.vineyard.TagCardView;
 
 public class TagPresenter extends LongClickPresenter {
@@ -23,9 +24,9 @@ public class TagPresenter extends LongClickPresenter {
         sDefaultBackgroundColor =
                 ContextCompat.getColor(parent.getContext(), Helpers.getThemeAttr(parent.getContext(), R.attr.cardDefaultBackground));
         sDefaultTextColor =
-                ContextCompat.getColor(parent.getContext(), R.color.card_default_text);
+                MaterialYouColors.onSurface(parent.getContext());
         sSelectedBackgroundColor =
-                ContextCompat.getColor(parent.getContext(), R.color.card_selected_background_white);
+                MaterialYouColors.secondary(parent.getContext());
         sSelectedTextColor =
                 ContextCompat.getColor(parent.getContext(), R.color.card_selected_text_grey);
 

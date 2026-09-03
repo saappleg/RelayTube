@@ -23,6 +23,7 @@
     <color name="relay_focus_content">#D9F8ECEE</color>
     <color name="relay_pressed_fill">#8AA95761</color>
     <color name="relay_disabled_content">#61D0B8BB</color>
+    <color name="relay_dialog_scrim">#7310090B</color>
 
     <!-- Material tokens for the individual selectable schemes. -->
     <color name="scheme_teal_background">#081315</color>
@@ -40,6 +41,7 @@
     <color name="scheme_teal_outline">#4B6E70</color>
     <color name="scheme_teal_focus_fill">#6667C5C0</color>
     <color name="scheme_teal_pressed_fill">#8A67C5C0</color>
+    <color name="scheme_teal_dialog_scrim">#73081315</color>
 
     <color name="scheme_grey_surface">#1A1B1D</color>
     <color name="scheme_grey_surface_variant">#25272A</color>
@@ -55,6 +57,7 @@
     <color name="scheme_grey_outline">#6A7078</color>
     <color name="scheme_grey_focus_fill">#66B8BEC7</color>
     <color name="scheme_grey_pressed_fill">#8AB8BEC7</color>
+    <color name="scheme_grey_dialog_scrim">#730C0D0F</color>
 
     <color name="scheme_red_surface">#1E0F13</color>
     <color name="scheme_red_surface_variant">#2B161B</color>
@@ -70,6 +73,7 @@
     <color name="scheme_red_outline">#79484F</color>
     <color name="scheme_red_focus_fill">#66B85A64</color>
     <color name="scheme_red_pressed_fill">#8AB85A64</color>
+    <color name="scheme_red_dialog_scrim">#730E080A</color>
 
     <color name="scheme_blue_surface">#101923</color>
     <color name="scheme_blue_surface_variant">#192938</color>
@@ -85,6 +89,7 @@
     <color name="scheme_blue_outline">#4F6B82</color>
     <color name="scheme_blue_focus_fill">#6685B9E8</color>
     <color name="scheme_blue_pressed_fill">#8A85B9E8</color>
+    <color name="scheme_blue_dialog_scrim">#730A121C</color>
 
     <color name="scheme_mono_surface">#111111</color>
     <color name="scheme_mono_surface_variant">#1D1D1D</color>
@@ -100,6 +105,7 @@
     <color name="scheme_mono_outline">#626262</color>
     <color name="scheme_mono_focus_fill">#66BDBDBD</color>
     <color name="scheme_mono_pressed_fill">#8ABDBDBD</color>
+    <color name="scheme_mono_dialog_scrim">#73000000</color>
 
     <!-- These legacy names are used by badges and red progress indicators. Keep the red UI
          within the same muted-maroon family instead of reintroducing saturated pure red. -->
@@ -181,9 +187,9 @@
 
     <!-- Vineyard -->
     <color name="black_87pc">#77000000</color>
-    <color name="primary_dark">#00796B</color>
-    <color name="primary_light">#B2DFDB</color>
-    <color name="primary">#009688</color>
+    <color name="primary_dark">@color/relay_surface_deep</color>
+    <color name="primary_light">@color/relay_surface_elevated</color>
+    <color name="primary">@color/relay_primary</color>
     <color name="white_87pc">#DDFFFFFF</color>
 
     <!-- Tooltip mod: extracted private values -->

@@ -108,17 +108,16 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
             holder.view.setElevation(dp(holder.view.getContext(), 2 + (6 * level)));
         }
 
-        int selectedSurface = MaterialYouColors.blend(
-                MaterialYouColors.surfaceContainerHigh(holder.view.getContext()),
-                MaterialYouColors.accent(holder.view.getContext()),
-                0.24f);
+        // Use the active scheme's focus token so Red stays muddy maroon and other schemes retain
+        // their own focused treatment.
+        int selectedSurface = MaterialYouColors.focusSurface(holder.view.getContext());
         int background = MaterialYouColors.withAlpha(selectedSurface, Math.round(0xF2 * level));
         holder.view.setBackground(MaterialYouColors.roundedSurface(
                 holder.view.getContext(), background, 22));
 
         TextView label = holder.view.findViewById(R.id.header_label);
         if (label != null) {
-            label.setTextColor(0xFFFFFFFF);
+            label.setTextColor(MaterialYouColors.onSurface(holder.view.getContext()));
         }
     }
 

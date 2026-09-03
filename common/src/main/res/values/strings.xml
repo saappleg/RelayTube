@@ -249,6 +249,10 @@
     <string name="share_embed_link">Share embed link</string>
     <string name="card_text_scroll_factor">Card text scroll speed</string>
     <string name="preferred_update_source">Select update source</string>
+    <string name="update_channel">Update channel</string>
+    <string name="update_channel_alpha">Alpha</string>
+    <string name="update_channel_beta">Beta</string>
+    <string name="update_channel_stable">Stable</string>
     <string name="hide_shorts">Hide shorts from Subscriptions</string>
     <string name="hide_shorts_channel">Hide shorts from a channel</string>
     <string name="key_remapping">Key remapping</string>

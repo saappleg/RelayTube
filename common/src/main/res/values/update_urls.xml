@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="update_default_channel">stable</string>
+
+    <string-array name="update_urls_alpha">
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-alpha/relaytube-update.json</item>
+    </string-array>
+    <string-array name="update_urls_beta">
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-beta/relaytube-update.json</item>
+    </string-array>
+    <string-array name="update_urls_stable">
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-stable/relaytube-update.json</item>
+    </string-array>
+
     <string-array name="update_urls">
-        <!-- NOTE: Real urls moved to the flavor's folder -->
-        <!--<item>https://github.com/yuliskov/SmartTubeNext/releases/download/latest/smarttube_beta.json</item>-->
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-stable/relaytube-update.json</item>
     </string-array>
 </resources>

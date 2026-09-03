@@ -12,6 +12,10 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.ATVBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AmazonBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.update.UpdateChannelManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
     private final AppUpdateChecker mUpdateChecker;
@@ -37,6 +41,8 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
 
         appendUpdateCheckButton(settingsPresenter);
 
+        appendUpdateChannel(settingsPresenter);
+
         appendInstallBridge(settingsPresenter);
 
         settingsPresenter.showDialog(mainTitle);
@@ -54,6 +60,26 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
                 option -> AppUpdatePresenter.instance(getContext()).start(true));
 
         settingsPresenter.appendSingleButton(updateCheckOption);
+    }
+
+    private void appendUpdateChannel(AppDialogPresenter settingsPresenter) {
+        UpdateChannelManager channelManager = new UpdateChannelManager(getContext());
+        List<String> channels = channelManager.getAvailableChannels();
+
+        if (channels.isEmpty()) {
+            return;
+        }
+
+        String selectedChannel = channelManager.getSelectedChannel();
+        List<OptionItem> options = new ArrayList<>();
+
+        for (String channel : channels) {
+            options.add(UiOptionItem.from(channelManager.getChannelLabel(channel),
+                    optionItem -> channelManager.setSelectedChannel(channel),
+                    channel.equals(selectedChannel)));
+        }
+
+        settingsPresenter.appendRadioCategory(getContext().getString(R.string.update_channel), options);
     }
 
     private void appendInstallBridge(AppDialogPresenter settingsPresenter) {

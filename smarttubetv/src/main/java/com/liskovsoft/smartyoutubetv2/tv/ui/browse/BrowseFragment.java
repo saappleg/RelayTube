@@ -194,8 +194,9 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         // This title replaces badge in case one is null
         //setTitle(getString(R.string.browse_title));
 
-        // Set fastLane (or headers) background color
-        setBrandColor(MaterialYouColors.surface(getContext()));
+        // Match the rail to the active browse surface. The header presenter owns the rounded
+        // focused tab, so Leanback must not introduce a second, unrelated rail color.
+        setBrandColor(MaterialYouColors.railSurface(getContext()));
 
         // Set search icon color.
         setSearchAffordanceColor(MaterialYouColors.accent(getContext()));

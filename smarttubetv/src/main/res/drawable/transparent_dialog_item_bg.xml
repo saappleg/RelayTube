@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@color/relay_pressed_fill" />
+    <item android:state_pressed="true" android:drawable="@drawable/material_settings_item_pressed" />
     <item android:state_focused="true" android:drawable="@drawable/tv_focus_ring" />
-    <item android:state_selected="true" android:drawable="@color/relay_focus_fill" />
+    <item android:state_selected="true" android:drawable="@drawable/material_settings_item_focused" />
+    <item android:state_activated="true" android:drawable="@drawable/material_settings_item_focused" />
     <item android:drawable="@android:color/transparent" />
 </selector>

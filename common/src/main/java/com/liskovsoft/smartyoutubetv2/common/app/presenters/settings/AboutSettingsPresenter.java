@@ -14,6 +14,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.ATVBridgePre
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AmazonBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.update.UpdateChannelManager;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 
@@ -50,7 +51,7 @@ public class AboutSettingsPresenter extends BasePresenter<Void> {
 
         appendUpdateChangelogButton(settingsPresenter);
 
-        appendUpdateSource(settingsPresenter);
+        appendUpdateChannel(settingsPresenter);
 
         appendInstallBridge(settingsPresenter);
 
@@ -143,27 +144,23 @@ public class AboutSettingsPresenter extends BasePresenter<Void> {
         }
     }
 
-    private void appendUpdateSource(AppDialogPresenter settingsPresenter) {
+    private void appendUpdateChannel(AppDialogPresenter settingsPresenter) {
+        UpdateChannelManager channelManager = new UpdateChannelManager(getContext());
         List<OptionItem> options = new ArrayList<>();
 
-        String[] updateUrls = getContext().getResources().getStringArray(R.array.update_urls);
-
-        if (updateUrls.length <= 1) {
+        if (channelManager.getAvailableChannels().isEmpty()) {
             return;
         }
 
-        if (mUpdateChecker.getPreferredHost() == null) {
-            mUpdateChecker.setPreferredHost(Helpers.getHost(updateUrls[0]));
+        String selectedChannel = channelManager.getSelectedChannel();
+
+        for (String channel : channelManager.getAvailableChannels()) {
+            options.add(UiOptionItem.from(channelManager.getChannelLabel(channel),
+                    optionItem -> channelManager.setSelectedChannel(channel),
+                    Helpers.equals(channel, selectedChannel)));
         }
 
-        for (String url : updateUrls) {
-            String hostName = Helpers.getHost(url);
-            options.add(UiOptionItem.from(hostName,
-                    optionItem -> mUpdateChecker.setPreferredHost(hostName),
-                    Helpers.equals(hostName, mUpdateChecker.getPreferredHost())));
-        }
-
-        settingsPresenter.appendRadioCategory(getContext().getString(R.string.preferred_update_source), options);
+        settingsPresenter.appendRadioCategory(getContext().getString(R.string.update_channel), options);
     }
 
     private void appendFeedback(AppDialogPresenter settingsPresenter) {

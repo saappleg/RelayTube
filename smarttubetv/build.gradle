@@ -37,6 +37,12 @@ def hasReleaseKeystore = keystorePropertiesFile.isFile()
         && ['storePassword', 'keyAlias', 'keyPassword'].every { propertyName ->
             keystoreProperties.getProperty(propertyName)?.trim()
         }
+def relayTubeVersionCode = (project.findProperty('relayTubeVersionCode')
+        ?: System.getenv('RELAYTUBE_VERSION_CODE') ?: '2430').toInteger()
+def relayTubeVersionName = project.findProperty('relayTubeVersionName')
+        ?: System.getenv('RELAYTUBE_VERSION_NAME') ?: '32.40'
+def relayTubeUpdateChannel = project.findProperty('relayTubeUpdateChannel')
+        ?: System.getenv('RELAYTUBE_UPDATE_CHANNEL') ?: 'beta'
 
 // The first letter of the flavor name must be in uppercase
 def requestedTaskNames = getGradle().getStartParameter().getTaskRequests().toString()
@@ -83,8 +89,8 @@ android {
         applicationId "com.relaytube"
         minSdkVersion project.properties.minSdkVersion
         targetSdkVersion project.properties.targetSdkVersion
-        versionCode 2429
-        versionName "32.39"
+        versionCode relayTubeVersionCode
+        versionName relayTubeVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
 
@@ -185,9 +191,16 @@ android {
 
     // NOTE: The main goal of prefixing a flavor is to group flavors' folders together
     productFlavors {
+        stalpha {
+            // Alpha and beta are side-by-side release channels for the beta package.
+            applicationId "com.relaytube.beta"
+            targetSdkVersion project.properties.compileSdkVersion
+            matchingFallbacks = ['stbeta']
+        }
         stbeta {
             applicationId "com.relaytube.beta"
             targetSdkVersion project.properties.compileSdkVersion
+            resValue "string", "update_default_channel", relayTubeUpdateChannel
         }
         ststable {
             applicationId "com.relaytube.stable"

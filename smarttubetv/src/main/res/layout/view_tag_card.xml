@@ -26,5 +26,5 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textSize="18sp"
-        android:textColor="@color/white"/>
+        android:textColor="?attr/materialOnSurface"/>
 </RelativeLayout>

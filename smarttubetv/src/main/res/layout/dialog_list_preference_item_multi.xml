@@ -18,6 +18,7 @@
         android:layout_height="match_parent"
         android:focusable="false"
         android:clickable="false"
+        android:buttonTint="@color/material_selection_tint"
         android:layout_marginEnd="@dimen/lb_preference_item_icon_margin_end"
         android:visibility="gone"
         android:layout_gravity="center_vertical" />

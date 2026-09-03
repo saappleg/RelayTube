@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="update_default_channel">stable</string>
     <string-array name="update_urls">
-        <item>https://github.com/saappleg/RelayTube/releases/download/latest/relaytube_stable2.json</item>
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-stable/relaytube-update.json</item>
     </string-array>
 </resources>

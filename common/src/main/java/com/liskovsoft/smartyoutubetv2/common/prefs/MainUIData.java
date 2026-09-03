@@ -401,7 +401,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
                 R.string.color_scheme_teal_oled,
                 "App.Theme.Leanback.OLED.Player",
                 "App.Theme.Leanback.OLED.Browse",
-                null,
+                "App.Theme.Leanback.Preferences",
                 mContext));
         mColorSchemes.add(new ColorScheme(
                 R.string.color_scheme_dark_grey_monochrome,
@@ -431,7 +431,9 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         //mIsCardAnimatedPreviewsEnabled = Helpers.parseBoolean(split, 0, true);
         mVideoGridScale = Helpers.parseFloat(split, 1, 1.0f); // 4 cards in a row
         mUIScale = Helpers.parseFloat(split, 2, 1.0f);
-        mColorSchemeIndex = Helpers.parseInt(split, 3, 1);
+        // Keep persisted scheme indices stable while making the first-run RelayTube default
+        // the existing Red/muddy-maroon scheme used by the TV reference.
+        mColorSchemeIndex = Helpers.parseInt(split, 3, 2);
         mIsCardMultilineTitleEnabled = Helpers.parseBoolean(split, 4, true);
         mChannelCategorySorting = Helpers.parseInt(split, 5, CHANNEL_SORTING_LAST_VIEWED);
         mPlaylistsStyle = Helpers.parseInt(split, 6, PLAYLISTS_STYLE_GRID);

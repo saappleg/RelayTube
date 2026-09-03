@@ -34,7 +34,7 @@
         android:paddingBottom="@dimen/tooltip_vertical_padding_mod"
         android:background="@drawable/tooltip_frame_dark_mod"
         android:textAppearance="@style/TextAppearance.AppCompat.Tooltip"
-        android:textColor="@color/foreground_material_dark_mod"
+        android:textColor="?attr/materialOnSurface"
         android:maxLines="1"
         android:ellipsize="end"
     />

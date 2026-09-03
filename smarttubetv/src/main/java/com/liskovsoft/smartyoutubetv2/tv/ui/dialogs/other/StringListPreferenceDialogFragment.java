@@ -64,8 +64,10 @@ public class StringListPreferenceDialogFragment extends LeanbackListPreferenceDi
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.getWidgetView().setChecked(
-                    mSelections.contains(mEntryValues[position].toString()));
+            boolean selected = mSelections.contains(mEntryValues[position].toString());
+            holder.getWidgetView().setChecked(selected);
+            holder.getContainer().setSelected(selected);
+            holder.getContainer().setActivated(selected);
             holder.getTitleView().setText(mEntries[position]);
         }
     }

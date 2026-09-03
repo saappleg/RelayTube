@@ -6,5 +6,5 @@
     <corners android:radius="@dimen/lb_rounded_rect_corner_radius" />
     <stroke
         android:width="2dp"
-        android:color="@color/relay_focus_content" />
+        android:color="?attr/materialPrimary" />
 </shape>

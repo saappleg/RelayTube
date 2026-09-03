@@ -34,7 +34,7 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-condensed"
                 android:maxLines="1"
-                android:textColor="@color/lb_basic_card_title_text_color"
+                android:textColor="?attr/materialOnSurface"
                 android:textSize="@dimen/lb_basic_card_title_text_size" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-condensed"
                 android:maxLines="1"
-                android:textColor="@color/lb_basic_card_content_text_color"
+                android:textColor="?attr/materialOnSurfaceVariant"
                 android:textSize="@dimen/lb_basic_card_content_text_size" />
 
             <ImageView

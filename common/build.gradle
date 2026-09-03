@@ -45,6 +45,9 @@ android {
     flavorDimensions "default"
 
     productFlavors {
+        stalpha {
+            matchingFallbacks = ['stbeta']
+        }
         stbeta {}
         ststable {}
         stfdroid {}

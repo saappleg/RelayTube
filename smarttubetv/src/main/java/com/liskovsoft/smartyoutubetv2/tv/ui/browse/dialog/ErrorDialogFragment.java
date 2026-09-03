@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.browse.dialog;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.errors.CategoryEmptyErro
 import com.liskovsoft.smartyoutubetv2.common.app.models.errors.ErrorFragmentData;
 import com.liskovsoft.smartyoutubetv2.common.app.models.errors.SignInError;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.material.MaterialYouColors;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.fragments.ErrorSupportFragment;
 
 public class ErrorDialogFragment extends ErrorSupportFragment implements BrowseSupportFragment.MainFragmentAdapterProvider {
@@ -46,6 +48,14 @@ public class ErrorDialogFragment extends ErrorSupportFragment implements BrowseS
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Leanback's default error frame is a black translucent drawable. That makes the
+        // logged-out/empty browse state look unrelated to the active rail and hides the
+        // scheme-specific muddy-maroon surface. Keep the empty state on the active browse
+        // surface and make it opaque so the framework fallback cannot show through.
+        if (getContext() != null) {
+            setBackgroundDrawable(new ColorDrawable(MaterialYouColors.railSurface(getContext())));
+        }
     }
 
     @Override

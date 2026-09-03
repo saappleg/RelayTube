@@ -28,6 +28,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -142,6 +143,8 @@ object RelayComposeViews {
             primary = themeColor(context, R.attr.materialPrimary, "relay_primary", "relay_dynamic_accent", "material_dynamic_accent", "fastlane_background"),
             onPrimary = themeColor(context, R.attr.materialOnPrimary, "relay_on_primary", "relay_on_background", "card_selected_text_black", "black"),
             primaryContainer = themeColor(context, R.attr.materialPrimaryContainer, "relay_primary_container", "relay_dynamic_accent_soft", "material_dynamic_accent_soft", "fastlane_background_dark"),
+            // The title surface is primaryContainer; use its light on-color explicitly so
+            // palettes with light primary accents never inherit a dark onPrimary value here.
             onPrimaryContainer = themeColor(context, R.attr.materialOnSurface, "relay_on_surface", "card_default_text", "white"),
             surface = themeColor(context, R.attr.materialSurface, "relay_surface", "relay_dynamic_surface", "material_dynamic_surface", "shelf_background_dark"),
             onSurface = themeColor(context, R.attr.materialOnSurface, "relay_on_surface", "card_default_text", "white"),
@@ -270,6 +273,10 @@ object RelayComposeViews {
         Row(
             modifier = Modifier
                 .fillMaxSize()
+                // The settings sheet is rounded only at its leading edge. Clip the Compose
+                // title before painting its primary-container color so it cannot square off
+                // the sheet's top-left corner; the trailing edge remains flush to the screen.
+                .clip(RoundedCornerShape(topStart = 28.dp))
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically

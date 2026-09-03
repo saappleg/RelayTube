@@ -30,7 +30,10 @@ public class SettingsCardPresenter extends Presenter {
         mDefaultBackgroundColor = MaterialYouColors.surfaceContainerHigh(context);
         mDefaultTextColor = MaterialYouColors.onSurface(context);
         mSelectedBackgroundColor = MaterialYouColors.focusedCardSurface(context);
-        mSelectedTextColor = MaterialYouColors.onPrimary(context);
+        // Focused cards use the dark scheme-specific focus surface. Keep their text on the
+        // scheme's light surface token so pale accents (grey, blue, and monochrome) do not
+        // render dark text on a dark focused card.
+        mSelectedTextColor = MaterialYouColors.onSurface(context);
 
         @SuppressLint("InflateParams")
         View container = LayoutInflater.from(context).inflate(R.layout.settings_card, null);

@@ -12,6 +12,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.update.UpdateChannelManager;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
 import com.liskovsoft.smartyoutubetv2.common.utils.LoadingManager;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -24,14 +25,14 @@ public class AppUpdatePresenter extends BasePresenter<Void> implements AppUpdate
     private static AppUpdatePresenter sInstance;
     private final AppUpdateChecker mUpdateChecker;
     private final AppDialogPresenter mSettingsPresenter;
-    private final String[] mUpdateManifestUrls;
+    private final UpdateChannelManager mUpdateChannelManager;
     private boolean mIsForceCheck;
 
     public AppUpdatePresenter(Context context) {
         super(context);
         mUpdateChecker = new AppUpdateChecker(context, this);
         mSettingsPresenter = AppDialogPresenter.instance(context);
-        mUpdateManifestUrls = context.getResources().getStringArray(R.array.update_urls);
+        mUpdateChannelManager = new UpdateChannelManager(context);
     }
 
     public static AppUpdatePresenter instance(Context context) {
@@ -50,12 +51,23 @@ public class AppUpdatePresenter extends BasePresenter<Void> implements AppUpdate
 
     public void start(boolean forceCheck) {
         mIsForceCheck = forceCheck;
+        String selectedChannel = mUpdateChannelManager.getSelectedChannel();
+        String[] updateManifestUrls = mUpdateChannelManager.getManifestUrls(selectedChannel);
+
+        if (updateManifestUrls.length == 0) {
+            onFinish();
+            return;
+        }
+
+        // Keep each channel's downloaded APK and last-check timestamp isolated.
+        // Alpha and beta share an application id but must never reuse each other's cache.
+        mUpdateChecker.setUpdateChannel(selectedChannel);
 
         if (forceCheck) {
             LoadingManager.showLoading(getContext(), true);
-            mUpdateChecker.forceCheckForUpdates(mUpdateManifestUrls);
+            mUpdateChecker.forceCheckForUpdates(updateManifestUrls);
         } else {
-            mUpdateChecker.checkForUpdates(mUpdateManifestUrls);
+            mUpdateChecker.checkForUpdates(updateManifestUrls);
         }
     }
 

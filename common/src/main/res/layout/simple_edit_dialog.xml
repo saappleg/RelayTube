@@ -17,8 +17,8 @@
         android:hint="@string/simple_edit_value_hint"
         android:imeOptions="actionNext"
         android:inputType="textUri|textPersonName"
-        android:textColor="@color/dialog_text_color"
+        android:textColor="?android:attr/textColorPrimary"
         android:textCursorDrawable="@null"
-        android:backgroundTint="@color/dialog_text_color"
-        android:textColorHint="@color/white_20" />
+        android:backgroundTint="?android:attr/colorAccent"
+        android:textColorHint="?android:attr/textColorSecondary" />
 </LinearLayout>

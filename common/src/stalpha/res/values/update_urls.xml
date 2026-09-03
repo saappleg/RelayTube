@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_default_channel">alpha</string>
+    <string-array name="update_urls">
+        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-alpha/relaytube-update.json</item>
+    </string-array>
+</resources>

@@ -20,6 +20,12 @@ public final class MaterialYouColors {
         return themeColor(context, R.attr.materialSurface, R.color.relay_surface);
     }
 
+    /** Browse rail base; this is the same scheme-specific surface used behind the content. */
+    @ColorInt
+    public static int railSurface(Context context) {
+        return themeColor(context, R.attr.shelfBackground, R.color.relay_background);
+    }
+
     @ColorInt
     public static int surfaceVariant(Context context) {
         return themeColor(context, R.attr.materialSurfaceVariant, R.color.relay_surface_variant);
@@ -46,8 +52,13 @@ public final class MaterialYouColors {
     }
 
     @ColorInt
+    public static int secondary(Context context) {
+        return themeColor(context, R.attr.materialSecondary, R.color.relay_secondary);
+    }
+
+    @ColorInt
     public static int surfaceContainerHigh(Context context) {
-        return blend(surfaceVariant(context), Color.WHITE, 0.055f);
+        return themeColor(context, R.attr.materialSurfaceElevated, R.color.relay_surface_elevated);
     }
 
     @ColorInt
@@ -62,7 +73,7 @@ public final class MaterialYouColors {
 
     @ColorInt
     public static int outline(Context context) {
-        return withAlpha(blend(surfaceVariant(context), Color.WHITE, 0.28f), 0x70);
+        return themeColor(context, R.attr.materialOutline, R.color.relay_outline);
     }
 
     @ColorInt
@@ -106,10 +117,10 @@ public final class MaterialYouColors {
         StateListDrawable states = new StateListDrawable();
         states.addState(
                 new int[]{android.R.attr.state_pressed},
-                ovalSurface(blend(accent(context), Color.BLACK, 0.12f)));
+                ovalSurface(pressedSurface(context)));
         states.addState(
                 new int[]{android.R.attr.state_focused},
-                ovalSurface(accent(context)));
+                ovalSurface(focusSurface(context)));
         states.addState(
                 new int[]{},
                 ovalSurface(surfaceVariant(context)));
@@ -117,7 +128,17 @@ public final class MaterialYouColors {
     }
 
     public static GradientDrawable playerControlSurface(Context context, boolean focused) {
-        return ovalSurface(focused ? accent(context) : surfaceVariant(context));
+        return ovalSurface(focused ? focusSurface(context) : surfaceVariant(context));
+    }
+
+    @ColorInt
+    public static int focusSurface(Context context) {
+        return themeColor(context, R.attr.materialFocusSurface, R.color.relay_primary_container);
+    }
+
+    @ColorInt
+    public static int pressedSurface(Context context) {
+        return themeColor(context, R.attr.materialPressedSurface, R.color.relay_primary);
     }
 
     private static GradientDrawable ovalSurface(@ColorInt int color) {

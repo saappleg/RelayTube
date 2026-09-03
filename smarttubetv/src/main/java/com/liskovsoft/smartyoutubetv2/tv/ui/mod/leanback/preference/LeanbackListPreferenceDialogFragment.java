@@ -247,7 +247,10 @@ public class LeanbackListPreferenceDialogFragment extends LeanbackPreferenceDial
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.getWidgetView().setChecked(mEntryValues[position].equals(mSelectedValue));
+            boolean selected = mEntryValues[position].equals(mSelectedValue);
+            holder.getWidgetView().setChecked(selected);
+            holder.getContainer().setSelected(selected);
+            holder.getContainer().setActivated(selected);
             holder.getTitleView().setText(mEntries[position]);
         }
 
@@ -302,8 +305,10 @@ public class LeanbackListPreferenceDialogFragment extends LeanbackPreferenceDial
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.getWidgetView().setChecked(
-                    mSelections.contains(mEntryValues[position].toString()));
+            boolean selected = mSelections.contains(mEntryValues[position].toString());
+            holder.getWidgetView().setChecked(selected);
+            holder.getContainer().setSelected(selected);
+            holder.getContainer().setActivated(selected);
             holder.getTitleView().setText(mEntries[position]);
         }
 

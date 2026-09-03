@@ -72,8 +72,8 @@
                     android:inputType="text|textAutoComplete"
                     android:singleLine="true"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/lb_search_bar_text"
-                    android:textColorHint="@color/lb_search_bar_hint"
+                    android:textColor="?attr/materialOnSurface"
+                    android:textColorHint="?attr/materialOnSurfaceVariant"
                     android:textCursorDrawable="@drawable/search_bar_cursor"
                     android:hint="@string/lb_search_bar_hint"
                     android:textSize="@dimen/lb_search_bar_text_size"/>

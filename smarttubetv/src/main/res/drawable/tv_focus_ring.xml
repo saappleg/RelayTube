@@ -2,9 +2,9 @@
 <!-- Material 3-like filled focus treatment for TV list rows and controls. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/relay_focus_fill" />
+    <solid android:color="?attr/materialFocusSurface" />
     <corners android:radius="@dimen/lb_rounded_rect_corner_radius" />
     <stroke
         android:width="2dp"
-        android:color="@color/relay_focus_ring" />
+        android:color="?attr/materialPrimary" />
 </shape>
