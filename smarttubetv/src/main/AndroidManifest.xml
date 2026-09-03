@@ -30,7 +30,24 @@
         com.google.android.exoplayer2.testutil,
         com.google.android.exoplayer2.ext.okhttp,
         com.google.firebase.crashlytics,
-        com.google.firebase.iid"/>
+        com.google.firebase.iid,
+        androidx.activity.compose,
+        androidx.compose.animation,
+        androidx.compose.animation.core,
+        androidx.compose.foundation,
+        androidx.compose.foundation.layout,
+        androidx.compose.material,
+        androidx.compose.material.icons,
+        androidx.compose.material.ripple,
+        androidx.compose.material3,
+        androidx.compose.runtime,
+        androidx.compose.runtime.saveable,
+        androidx.compose.ui,
+        androidx.compose.ui.geometry,
+        androidx.compose.ui.graphics,
+        androidx.compose.ui.text,
+        androidx.compose.ui.unit,
+        androidx.compose.ui.util"/>
 
     <uses-feature
         android:name="android.hardware.microphone"

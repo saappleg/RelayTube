@@ -1,40 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MOD: Focused player button color (default: #66EEEEEE, new: #E8FFFFFF) -->
-    <color name="lb_control_button_color">#86EEEEEE</color>
+    <!-- Relay Home dark-TV / Material 3 semantic palette. Keep these fixed so every TV
+         qualifier and product flavor renders the same way. -->
+    <color name="relay_background">#050608</color>
+    <color name="relay_surface">#111318</color>
+    <color name="relay_surface_variant">#171A20</color>
+    <color name="relay_surface_elevated">#15121C</color>
+    <color name="relay_surface_deep">#0D1932</color>
+    <color name="relay_primary">#7B9FFF</color>
+    <color name="relay_primary_container">#192B61</color>
+    <color name="relay_secondary">#C187FF</color>
+    <color name="relay_secondary_container">#39205B</color>
+    <color name="relay_on_background">#F6F2EA</color>
+    <color name="relay_on_surface">#F6F2EA</color>
+    <color name="relay_on_surface_variant">#B7B8C1</color>
+    <color name="relay_outline">#333740</color>
+    <color name="relay_outline_variant">#1FFFFFFF</color>
+    <color name="relay_focus_fill">#267B9FFF</color>
+    <color name="relay_focus_ring">#7B9FFF</color>
+    <color name="relay_focus_content">#C7F6F2EA</color>
+    <color name="relay_pressed_fill">#3D7B9FFF</color>
+    <color name="relay_disabled_content">#61B7B8C1</color>
+
+    <!-- Leanback resources overridden by the app module. -->
+    <color name="lb_action_text_color">@color/relay_on_surface</color>
+    <color name="lb_basic_card_bg_color">@color/relay_surface</color>
+    <color name="lb_basic_card_content_text_color">@color/relay_on_surface_variant</color>
+    <color name="lb_basic_card_info_bg_color">@color/relay_surface</color>
+    <color name="lb_basic_card_title_text_color">@color/relay_on_surface</color>
+    <color name="lb_browse_header_color">@color/relay_on_surface</color>
+    <color name="lb_browse_header_description_color">@color/relay_on_surface_variant</color>
+    <color name="lb_browse_title_color">@color/relay_on_surface</color>
+    <color name="lb_control_button_color">@color/relay_focus_fill</color>
+    <color name="lb_control_button_text">@color/relay_on_surface</color>
+    <color name="lb_default_brand_color">@color/relay_surface_deep</color>
+    <color name="lb_default_brand_color_dark">@color/relay_background</color>
+    <color name="lb_details_description_body_color">@color/relay_on_surface_variant</color>
+    <color name="lb_details_description_color">@color/relay_on_surface</color>
+    <color name="lb_guidedactions_background">@color/relay_surface_variant</color>
+    <color name="lb_guidedactions_background_dark">@color/relay_background</color>
+    <color name="lb_guidedactions_item_unselected_text_color">@color/relay_on_surface_variant</color>
+    <color name="lb_list_item_unselected_text_color">@color/relay_on_surface_variant</color>
+    <color name="lb_media_background_color">@color/relay_surface</color>
+    <color name="lb_playback_icon_highlight_no_theme">@color/relay_primary</color>
+    <color name="lb_playback_progress_color_no_theme">@color/relay_primary</color>
+    <color name="lb_preference_item_category_text_color">@color/relay_primary</color>
+    <color name="lb_search_bar_hint">@color/relay_on_surface_variant</color>
+    <color name="lb_search_bar_text">@color/relay_on_surface</color>
+    <color name="lb_search_plate_hint_text_color">@color/relay_on_surface_variant</color>
 
     <!-- Common colors -->
-    <color name="default_background_gradient_start">#000000</color>
-    <color name="default_background_gradient_end">#DDDDDD</color>
-    <color name="fastlane_background">#0096a6</color>
-    <color name="fastlane_background_dark">#004B53</color>
-    <color name="default_light_grey">#343434</color>
-    <color name="search_opaque">#0096a6</color>
+    <color name="default_background_gradient_start">@color/relay_background</color>
+    <color name="default_background_gradient_end">@color/relay_surface_deep</color>
+    <color name="fastlane_background">@color/relay_primary</color>
+    <color name="fastlane_background_dark">@color/relay_surface_deep</color>
+    <color name="default_light_grey">@color/relay_outline</color>
+    <color name="search_opaque">@color/relay_primary</color>
     <color name="search_opaque_yellow">#ffaa3f</color>
 
     <!-- Card view colors -->
-    <color name="card_selected_background_white">#FFFFFF</color>
+    <color name="card_selected_background_white">@color/relay_on_background</color>
     <color name="card_selected_background_white_grey">#D3D3D3</color>
     <color name="card_selected_background_yellow">#ffaa3f</color>
     <color name="card_selected_background_grey">#343434</color>
     <color name="card_selected_text_black">#000000</color>
     <color name="card_selected_text_grey">#343434</color>
-    <color name="card_default_background">#0096a6</color>
-    <color name="card_default_background_dark">#004B53</color>
-    <color name="card_default_text">#FFFFFF</color>
+    <color name="card_default_background">@color/relay_surface_variant</color>
+    <color name="card_default_background_dark">@color/relay_surface</color>
+    <color name="card_default_text">@color/relay_on_surface</color>
 
     <!-- Browse fragment colors -->
-    <color name="shelf_background">#282828</color>
-    <color name="shelf_background_dark">#131313</color>
-    <color name="icon_background">#4A4F51</color>
-    <color name="icon_alt_background">#2A2F51</color>
+    <color name="shelf_background">@color/relay_surface_variant</color>
+    <color name="shelf_background_dark">@color/relay_background</color>
+    <color name="icon_background">#121A31</color>
+    <color name="icon_alt_background">@color/relay_secondary_container</color>
     <color name="player_background">#FF000000</color>
 
     <!-- Dark color scheme -->
-    <color name="scheme_grey_background">#181818</color>
-    <color name="scheme_grey_background_dark">#181818</color>
-    <color name="scheme_grey_shelf_background_dark">#000000</color>
-    <color name="scheme_grey_card_background_dark">#121212</color>
+    <color name="scheme_grey_background">@color/relay_surface_variant</color>
+    <color name="scheme_grey_background_dark">@color/relay_surface_deep</color>
+    <color name="scheme_grey_shelf_background_dark">@color/relay_background</color>
+    <color name="scheme_grey_card_background_dark">@color/relay_surface</color>
 
     <!-- Red color scheme -->
     <color name="scheme_red_background">#131313</color>

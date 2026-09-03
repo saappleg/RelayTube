@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- MOD: add outline to the search -->
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="#ff888888"/>
-    <corners android:radius="30dp"/>
-    <stroke
-        android:width="2dp"
-        android:color="#ffffffff"/>
-</shape>
+<!-- Reusable selector for search focus without changing the search view code. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/tv_focus_ring" />
+    <item android:drawable="@drawable/tv_search_outline" />
+</selector>

@@ -34,7 +34,10 @@ project.ext {
     // MOD: use versions from sharedutils
     // androidXTestVersion = '1.1.0'
     //protobufVersion = '4.32.1'
-    protobufVersion = '3.17.3' // the latest for Android 4
+    // 3.17.3 publishes an x86_64 executable under its osx-aarch_64 classifier.
+    // 3.21.12 supplies a native Apple Silicon protoc while retaining the Java 7
+    // bytecode level required by this project's legacy Android baseline.
+    protobufVersion = '3.21.12'
     androidXTestVersion = project.properties.testXSupportVersion
     modulePrefix = ':'
     if (gradle.ext.has('exoplayerModulePrefix')) {

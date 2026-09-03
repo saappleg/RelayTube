@@ -32,6 +32,7 @@ import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.RadioListPreferenceDia
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.StringListPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.StringListPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.preference.LeanbackListPreferenceDialogFragment;
+import com.liskovsoft.smartyoutubetv2.tv.ui.compose.RelayComposeViews;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 import java.util.List;
@@ -323,6 +324,10 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
                 ViewUtil.enableTransparentDialog(getActivity(), getParentFragment().getView());
                 // Enable transparency on child fragment itself (isn't attached to parent yet)
                 ViewUtil.enableTransparentDialog(getActivity(), view);
+            }
+
+            if (view != null) {
+                RelayComposeViews.installSettingsTitle(view, mTitle);
             }
 
             return view;

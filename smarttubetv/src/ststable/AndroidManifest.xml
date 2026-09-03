@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <receiver
+            android:name="com.liskovsoft.smartyoutubetv2.common.integration.relay.RelayProfileReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.relaytube.stable.ACCESS_VIDEO_DATA">
+            <intent-filter>
+                <action android:name="com.relaytube.action.SELECT_PROFILE" />
+                <action android:name="com.relaytube.action.REQUEST_PROFILES" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="com.liskovsoft.smartyoutubetv2.common.integration.relay.RelayProfilesProvider"
+            android:authorities="com.relaytube.stable.relayprofiles"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.relaytube.stable.ACCESS_VIDEO_DATA"
+            android:readPermission="com.relaytube.stable.ACCESS_VIDEO_DATA"
+            android:writePermission="com.relaytube.stable.ACCESS_VIDEO_DATA" />
+    </application>
+</manifest>

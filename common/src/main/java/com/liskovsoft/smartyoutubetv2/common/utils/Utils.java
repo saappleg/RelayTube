@@ -110,6 +110,11 @@ import okhttp3.Response;
 
 public class Utils {
     public static final String[] KNOWN_PACKAGES = {
+            // Keep the RelayTube beta/stable entries first: backup migration uses this pair.
+            "com.relaytube.beta",
+            "com.relaytube.stable",
+            "com.relaytube.fdroid",
+            // Legacy package IDs are retained so existing backups remain discoverable.
             "com.liskovsoft.smarttubetv.beta",
             "com.teamsmart.videomanager.tv",
             "org.smarttube.beta",

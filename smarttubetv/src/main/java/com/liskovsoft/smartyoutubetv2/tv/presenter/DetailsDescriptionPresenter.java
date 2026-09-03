@@ -16,20 +16,25 @@
 
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
-import androidx.leanback.widget.AbstractDetailsDescriptionPresenter;
-
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 
-public class DetailsDescriptionPresenter extends AbstractDetailsDescriptionPresenter {
+public class DetailsDescriptionPresenter extends ComposeDetailsDescriptionPresenter {
+    public DetailsDescriptionPresenter() {
+        super(new TextProvider() {
+            @Override
+            public CharSequence getTitle(Object item) {
+                return item instanceof Video ? ((Video) item).getTitle() : null;
+            }
 
-    @Override
-    protected void onBindDescription(ViewHolder viewHolder, Object item) {
-        Video video = (Video) item;
+            @Override
+            public CharSequence getSubtitle(Object item) {
+                return item instanceof Video ? ((Video) item).getAuthor() : null;
+            }
 
-        if (video != null) {
-            viewHolder.getTitle().setText(video.getTitle());
-            viewHolder.getSubtitle().setText(video.getAuthor());
-            viewHolder.getBody().setText(video.getSecondTitle());
-        }
+            @Override
+            public CharSequence getBody(Object item) {
+                return item instanceof Video ? ((Video) item).getSecondTitle() : null;
+            }
+        });
     }
 }

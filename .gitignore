@@ -47,6 +47,8 @@ build/
 log.txt
 android.keystore
 android-upd2.keystore
+keystore.properties
+RelaySigning/
 build.log
 notes.txt
 out.txt

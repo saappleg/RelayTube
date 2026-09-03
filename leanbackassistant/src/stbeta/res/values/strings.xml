@@ -1,5 +1,5 @@
 <resources>
-    <string name="search_label">SmartTube</string>
-    <string name="settings_description">SmartTube Videos</string>
-    <string translatable="false" name="search_authority">org.smarttube.beta</string>
+    <string name="search_label">RelayTube</string>
+    <string name="settings_description">RelayTube Videos</string>
+    <string translatable="false" name="search_authority">com.relaytube.beta</string>
 </resources>

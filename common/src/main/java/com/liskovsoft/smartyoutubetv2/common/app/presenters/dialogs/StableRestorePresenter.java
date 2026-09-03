@@ -7,11 +7,11 @@ import com.liskovsoft.sharedutils.helpers.DeviceHelpers.ArchType;
 
 public class StableRestorePresenter extends BridgePresenter {
     private static final Integer[] STABLE_PKG_HASH = {-1}; // always re-install
-    private static final String STABLE_PKG_NAME = "com.teamsmart.videomanager.tv";
-    private static final String BETA_PKG_NAME = "com.liskovsoft.smarttubetv.beta";
-    private static final String STABLE_PKG_URL_ARM = "https://github.com/yuliskov/SmartTube/releases/download/latest/smarttube_stable.apk";
-    private static final String STABLE_PKG_URL_ARM64 = "https://github.com/yuliskov/SmartTube/releases/download/latest/smarttube_stable_arm64-v8a.apk";
-    private static final String STABLE_PKG_URL_X86 = "https://github.com/yuliskov/SmartTube/releases/download/latest/smarttube_stable_x86.apk";
+    private static final String STABLE_PKG_NAME = "com.relaytube.stable";
+    private static final String BETA_PKG_NAME = "com.relaytube.beta";
+    private static final String STABLE_PKG_URL_ARM = "https://github.com/saappleg/RelayTube/releases/download/latest/relaytube_stable.apk";
+    private static final String STABLE_PKG_URL_ARM64 = "https://github.com/saappleg/RelayTube/releases/download/latest/relaytube_stable_arm64-v8a.apk";
+    private static final String STABLE_PKG_URL_X86 = "https://github.com/saappleg/RelayTube/releases/download/latest/relaytube_stable_x86.apk";
     private static StableRestorePresenter sInstance;
 
     public StableRestorePresenter(Context context) {
