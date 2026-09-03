@@ -52,7 +52,7 @@ public final class MaterialYouColors {
 
     @ColorInt
     public static int focusedCardSurface(Context context) {
-        return blend(surfaceContainerHigh(context), accentContainer(context), 0.10f);
+        return blend(surfaceContainerHigh(context), accent(context), 0.10f);
     }
 
     @ColorInt
