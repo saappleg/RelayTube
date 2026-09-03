@@ -1,26 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Relay Home dark-TV / Material 3 semantic palette. Keep these fixed so every TV
-         qualifier and product flavor renders the same way. -->
-    <color name="relay_background">#050608</color>
-    <color name="relay_surface">#111318</color>
-    <color name="relay_surface_variant">#171A20</color>
-    <color name="relay_surface_elevated">#15121C</color>
-    <color name="relay_surface_deep">#0D1932</color>
-    <color name="relay_primary">#7B9FFF</color>
-    <color name="relay_primary_container">#192B61</color>
-    <color name="relay_secondary">#C187FF</color>
-    <color name="relay_secondary_container">#39205B</color>
-    <color name="relay_on_background">#F6F2EA</color>
-    <color name="relay_on_surface">#F6F2EA</color>
-    <color name="relay_on_surface_variant">#B7B8C1</color>
-    <color name="relay_outline">#333740</color>
-    <color name="relay_outline_variant">#1FFFFFFF</color>
-    <color name="relay_focus_fill">#267B9FFF</color>
-    <color name="relay_focus_ring">#7B9FFF</color>
-    <color name="relay_focus_content">#C7F6F2EA</color>
-    <color name="relay_pressed_fill">#3D7B9FFF</color>
-    <color name="relay_disabled_content">#61B7B8C1</color>
+    <!-- RelayTube dark-TV / Material 3 fallback palette. The default treatment is a muted
+         maroon so the settings sheet and navigation rail have a warm, cohesive base on older
+         Android TV devices. Per-scheme Material tokens are bound from styles.xml. -->
+    <color name="relay_background">#10090B</color>
+    <color name="relay_surface">#1B1013</color>
+    <color name="relay_surface_variant">#28171B</color>
+    <color name="relay_surface_elevated">#341E23</color>
+    <color name="relay_surface_deep">#180B0F</color>
+    <color name="relay_primary">#A95761</color>
+    <color name="relay_primary_container">#5A2933</color>
+    <color name="relay_secondary">#D99AA0</color>
+    <color name="relay_secondary_container">#42212A</color>
+    <color name="relay_on_primary">#FFF5F5</color>
+    <color name="relay_on_background">#F8ECEE</color>
+    <color name="relay_on_surface">#F8ECEE</color>
+    <color name="relay_on_surface_variant">#D0B8BB</color>
+    <color name="relay_outline">#6E484E</color>
+    <color name="relay_outline_variant">#35FFFFFF</color>
+    <color name="relay_focus_fill">#66A95761</color>
+    <color name="relay_focus_ring">#D9A95761</color>
+    <color name="relay_focus_content">#D9F8ECEE</color>
+    <color name="relay_pressed_fill">#8AA95761</color>
+    <color name="relay_disabled_content">#61D0B8BB</color>
+
+    <!-- Material tokens for the individual selectable schemes. -->
+    <color name="scheme_teal_background">#081315</color>
+    <color name="scheme_teal_surface">#101F22</color>
+    <color name="scheme_teal_surface_variant">#183034</color>
+    <color name="scheme_teal_surface_elevated">#234348</color>
+    <color name="scheme_teal_surface_deep">#0B1B1E</color>
+    <color name="scheme_teal_primary">#67C5C0</color>
+    <color name="scheme_teal_primary_container">#1A4E50</color>
+    <color name="scheme_teal_secondary">#A4D6D1</color>
+    <color name="scheme_teal_secondary_container">#234346</color>
+    <color name="scheme_teal_on_primary">#062022</color>
+    <color name="scheme_teal_on_surface">#E8F5F3</color>
+    <color name="scheme_teal_on_surface_variant">#B5CECC</color>
+    <color name="scheme_teal_outline">#4B6E70</color>
+    <color name="scheme_teal_focus_fill">#6667C5C0</color>
+    <color name="scheme_teal_pressed_fill">#8A67C5C0</color>
+
+    <color name="scheme_grey_surface">#1A1B1D</color>
+    <color name="scheme_grey_surface_variant">#25272A</color>
+    <color name="scheme_grey_surface_elevated">#303236</color>
+    <color name="scheme_grey_surface_deep">#111214</color>
+    <color name="scheme_grey_primary">#B8BEC7</color>
+    <color name="scheme_grey_primary_container">#474A4F</color>
+    <color name="scheme_grey_secondary">#D8DCE2</color>
+    <color name="scheme_grey_secondary_container">#32353A</color>
+    <color name="scheme_grey_on_primary">#181A1D</color>
+    <color name="scheme_grey_on_surface">#F0F2F5</color>
+    <color name="scheme_grey_on_surface_variant">#C1C6CE</color>
+    <color name="scheme_grey_outline">#6A7078</color>
+    <color name="scheme_grey_focus_fill">#66B8BEC7</color>
+    <color name="scheme_grey_pressed_fill">#8AB8BEC7</color>
+
+    <color name="scheme_red_surface">#1E0F13</color>
+    <color name="scheme_red_surface_variant">#2B161B</color>
+    <color name="scheme_red_surface_elevated">#3A1D24</color>
+    <color name="scheme_red_surface_deep">#16090D</color>
+    <color name="scheme_red_primary">#B85A64</color>
+    <color name="scheme_red_primary_container">#642A35</color>
+    <color name="scheme_red_secondary">#E0A0A5</color>
+    <color name="scheme_red_secondary_container">#48212A</color>
+    <color name="scheme_red_on_primary">#FFF4F4</color>
+    <color name="scheme_red_on_surface">#FAEDEE</color>
+    <color name="scheme_red_on_surface_variant">#D5B8BC</color>
+    <color name="scheme_red_outline">#79484F</color>
+    <color name="scheme_red_focus_fill">#66B85A64</color>
+    <color name="scheme_red_pressed_fill">#8AB85A64</color>
+
+    <color name="scheme_blue_surface">#101923</color>
+    <color name="scheme_blue_surface_variant">#192938</color>
+    <color name="scheme_blue_surface_elevated">#243A4E</color>
+    <color name="scheme_blue_surface_deep">#0A121C</color>
+    <color name="scheme_blue_primary">#85B9E8</color>
+    <color name="scheme_blue_primary_container">#214A70</color>
+    <color name="scheme_blue_secondary">#A9D2F3</color>
+    <color name="scheme_blue_secondary_container">#21415E</color>
+    <color name="scheme_blue_on_primary">#0B1D2C</color>
+    <color name="scheme_blue_on_surface">#EAF3FB</color>
+    <color name="scheme_blue_on_surface_variant">#B6C9D9</color>
+    <color name="scheme_blue_outline">#4F6B82</color>
+    <color name="scheme_blue_focus_fill">#6685B9E8</color>
+    <color name="scheme_blue_pressed_fill">#8A85B9E8</color>
+
+    <color name="scheme_mono_surface">#111111</color>
+    <color name="scheme_mono_surface_variant">#1D1D1D</color>
+    <color name="scheme_mono_surface_elevated">#2A2A2A</color>
+    <color name="scheme_mono_surface_deep">#000000</color>
+    <color name="scheme_mono_primary">#BDBDBD</color>
+    <color name="scheme_mono_primary_container">#3A3A3A</color>
+    <color name="scheme_mono_secondary">#E0E0E0</color>
+    <color name="scheme_mono_secondary_container">#292929</color>
+    <color name="scheme_mono_on_primary">#111111</color>
+    <color name="scheme_mono_on_surface">#F5F5F5</color>
+    <color name="scheme_mono_on_surface_variant">#B5B5B5</color>
+    <color name="scheme_mono_outline">#626262</color>
+    <color name="scheme_mono_focus_fill">#66BDBDBD</color>
+    <color name="scheme_mono_pressed_fill">#8ABDBDBD</color>
+
+    <!-- These legacy names are used by badges and red progress indicators. Keep the red UI
+         within the same muted-maroon family instead of reintroducing saturated pure red. -->
+    <color name="red">@color/scheme_red_primary</color>
+    <color name="semi_red">@color/relay_primary</color>
+    <color name="light_red">@color/scheme_red_secondary</color>
+    <color name="dark_red">@color/scheme_red_primary_container</color>
 
     <!-- Leanback resources overridden by the app module. -->
     <color name="lb_action_text_color">@color/relay_on_surface</color>
@@ -72,25 +158,26 @@
     <!-- Browse fragment colors -->
     <color name="shelf_background">@color/relay_surface_variant</color>
     <color name="shelf_background_dark">@color/relay_background</color>
-    <color name="icon_background">#121A31</color>
+    <color name="icon_background">#2A2022</color>
     <color name="icon_alt_background">@color/relay_secondary_container</color>
     <color name="player_background">#FF000000</color>
 
     <!-- Dark color scheme -->
-    <color name="scheme_grey_background">@color/relay_surface_variant</color>
-    <color name="scheme_grey_background_dark">@color/relay_surface_deep</color>
-    <color name="scheme_grey_shelf_background_dark">@color/relay_background</color>
-    <color name="scheme_grey_card_background_dark">@color/relay_surface</color>
+    <color name="scheme_grey_background">#292C31</color>
+    <color name="scheme_grey_background_dark">@color/scheme_grey_surface_deep</color>
+    <color name="scheme_grey_shelf_background_dark">#0C0D0F</color>
+    <color name="scheme_grey_card_background_dark">@color/scheme_grey_surface</color>
+    <color name="scheme_grey_accent">@color/scheme_grey_primary</color>
 
     <!-- Red color scheme -->
-    <color name="scheme_red_background">#131313</color>
-    <color name="scheme_red_background_dark">@color/dark_red</color>
-    <color name="scheme_red_shelf_background_dark">#131313</color>
-    <color name="scheme_red_card_background_dark">#36474f</color>
+    <color name="scheme_red_background">#3B1B22</color>
+    <color name="scheme_red_background_dark">@color/scheme_red_surface_deep</color>
+    <color name="scheme_red_shelf_background_dark">#0E080A</color>
+    <color name="scheme_red_card_background_dark">@color/scheme_red_surface</color>
 
     <!-- Blue color scheme -->
-    <color name="scheme_blue_background">#33B5E5</color>
-    <color name="scheme_blue_background_dark">#207EA1</color>
+    <color name="scheme_blue_background">#5DA9DE</color>
+    <color name="scheme_blue_background_dark">@color/scheme_blue_surface_deep</color>
 
     <!-- Vineyard -->
     <color name="black_87pc">#77000000</color>

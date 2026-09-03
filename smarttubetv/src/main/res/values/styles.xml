@@ -8,6 +8,23 @@
     <attr name="cardProgressStyle" format="reference"/>
     <attr name="appLogo" format="reference"/>
 
+    <!-- Material 3 semantic tokens shared by Compose, Leanback, and preference layouts. Keeping
+         these as theme attributes lets one component honor every selectable color scheme. -->
+    <attr name="materialSurface" format="reference"/>
+    <attr name="materialSurfaceVariant" format="reference"/>
+    <attr name="materialSurfaceElevated" format="reference"/>
+    <attr name="materialSurfaceDeep" format="reference"/>
+    <attr name="materialPrimary" format="reference"/>
+    <attr name="materialPrimaryContainer" format="reference"/>
+    <attr name="materialSecondary" format="reference"/>
+    <attr name="materialSecondaryContainer" format="reference"/>
+    <attr name="materialOnPrimary" format="reference"/>
+    <attr name="materialOnSurface" format="reference"/>
+    <attr name="materialOnSurfaceVariant" format="reference"/>
+    <attr name="materialOutline" format="reference"/>
+    <attr name="materialFocusSurface" format="reference"/>
+    <attr name="materialPressedSurface" format="reference"/>
+
     <!-- Increase spacing between items in GridView -->
     <style name="GridViewStyle" parent="Widget.Leanback.GridItems.VerticalGridView">
         <item name="android:horizontalSpacing">@dimen/grid_item_horizontal_spacing</item>
@@ -24,29 +41,58 @@
         <item name="android:verticalSpacing">@dimen/browse_headers_vertical_spacing</item>
     </style>
 
+    <style name="TextAppearance.Leanback.Header" parent="TextAppearance.Leanback">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/materialOnSurface</item>
+    </style>
+    <style name="TextAppearance.Leanback.Row.Header" parent="TextAppearance.Leanback.Header">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="TextAppearance.Leanback.Row.Header.Description" parent="TextAppearance.Leanback.Header">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/materialOnSurfaceVariant</item>
+    </style>
+
     <!-- Color scheme: Teal (Default) -->
     <style name="App.Theme.Leanback.Player" parent="Theme.Leanback">
         <!-- <item name="android:windowBackground">@null</item> -->
         <!-- NOTE: don't use transparency because the BackgroundManager won't work (BackgroundManager:778) -->
         <item name="android:windowBackground">@android:color/black</item>
-        <item name="android:colorPrimary" tools:targetApi="21">@color/relay_surface_deep</item>
-        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/relay_background</item>
-        <item name="android:colorControlActivated" tools:targetApi="21">@color/relay_primary</item>
-        <item name="android:colorControlHighlight" tools:targetApi="21">@color/relay_focus_fill</item>
-        <item name="android:colorControlNormal" tools:targetApi="21">@color/relay_on_surface_variant</item>
-        <item name="android:textColorPrimary">@color/relay_on_surface</item>
-        <item name="android:textColorSecondary">@color/relay_on_surface_variant</item>
-        <item name="android:navigationBarColor" tools:targetApi="21">@color/relay_background</item>
-        <item name="defaultBrandColor">@color/relay_surface_deep</item>
-        <item name="defaultBrandColorDark">@color/relay_background</item>
-        <item name="brandColor">@color/relay_surface_deep</item>
-        <item name="brandAccentColor">@color/relay_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_teal_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_teal_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_teal_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_teal_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="defaultBrandColor">@color/scheme_teal_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_teal_background</item>
+        <item name="brandColor">@color/scheme_teal_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_teal_primary</item>
+        <item name="materialSurface">@color/scheme_teal_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_teal_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_teal_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_teal_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_teal_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_teal_primary_container</item>
+        <item name="materialSecondary">@color/scheme_teal_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_teal_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_teal_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_teal_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_teal_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_teal_outline</item>
+        <item name="materialFocusSurface">@color/scheme_teal_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_teal_primary</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="shelfBackground">@color/shelf_background_dark</item>
-        <item name="cardDefaultBackground">@color/card_default_background_dark</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
+        <item name="cardDefaultBackground">@color/scheme_teal_surface</item>
         <item name="cardSelectedBackground">@color/card_selected_background_white</item>
         <item name="cardProgressStyle">?android:attr/progressBarStyleHorizontal</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_teal_primary</item>
         <item name="itemsVerticalGridStyle">@style/GridViewStyle</item>
         <item name="rowHorizontalGridStyle">@style/RowViewStyle</item>
         <!-- Disable activity transition animations -->
@@ -60,26 +106,40 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="App.Theme.Leanback.Browse" parent="Theme.Leanback.Browse">
-        <item name="android:windowBackground">@color/shelf_background_dark</item>
-        <item name="android:colorPrimary" tools:targetApi="21">@color/relay_surface_deep</item>
-        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/relay_background</item>
-        <item name="android:colorControlActivated" tools:targetApi="21">@color/relay_primary</item>
-        <item name="android:colorControlHighlight" tools:targetApi="21">@color/relay_focus_fill</item>
-        <item name="android:colorControlNormal" tools:targetApi="21">@color/relay_on_surface_variant</item>
-        <item name="android:textColorPrimary">@color/relay_on_surface</item>
-        <item name="android:textColorSecondary">@color/relay_on_surface_variant</item>
-        <item name="android:navigationBarColor" tools:targetApi="21">@color/relay_background</item>
-        <item name="defaultBrandColor">@color/relay_surface_deep</item>
-        <item name="defaultBrandColorDark">@color/relay_background</item>
+        <item name="android:windowBackground">@color/scheme_teal_background</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_teal_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_teal_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_teal_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_teal_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="defaultBrandColor">@color/scheme_teal_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_teal_background</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="brandColor">@color/fastlane_background_dark</item>
-        <item name="brandAccentColor">@color/fastlane_background</item>
-        <item name="shelfBackground">@color/shelf_background_dark</item>
-        <item name="cardDefaultBackground">@color/card_default_background_dark</item>
+        <item name="brandColor">@color/scheme_teal_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_teal_primary</item>
+        <item name="materialSurface">@color/scheme_teal_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_teal_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_teal_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_teal_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_teal_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_teal_primary_container</item>
+        <item name="materialSecondary">@color/scheme_teal_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_teal_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_teal_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_teal_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_teal_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_teal_outline</item>
+        <item name="materialFocusSurface">@color/scheme_teal_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_teal_primary</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
+        <item name="cardDefaultBackground">@color/scheme_teal_surface</item>
         <item name="cardSelectedBackground">@color/card_selected_background_white</item>
         <item name="cardProgressStyle">?android:attr/progressBarStyleHorizontal</item>
         <item name="appLogo">@mipmap/app_logo</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_teal_primary</item>
         <item name="itemsVerticalGridStyle">@style/GridViewStyle</item>
         <item name="rowHorizontalGridStyle">@style/RowViewStyle</item>
         <item name="headersVerticalGridStyle">@style/BrowseHeaderStyle</item>
@@ -94,21 +154,35 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="App.Theme.Leanback.GuidedStep" parent="Theme.Leanback.GuidedStep">
-        <item name="android:windowBackground">@color/shelf_background_dark</item>
-        <item name="android:colorPrimary" tools:targetApi="21">@color/relay_surface_deep</item>
-        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/relay_background</item>
-        <item name="android:colorControlActivated" tools:targetApi="21">@color/relay_primary</item>
-        <item name="android:colorControlHighlight" tools:targetApi="21">@color/relay_focus_fill</item>
-        <item name="android:colorControlNormal" tools:targetApi="21">@color/relay_on_surface_variant</item>
-        <item name="android:textColorPrimary">@color/relay_on_surface</item>
-        <item name="android:textColorSecondary">@color/relay_on_surface_variant</item>
-        <item name="android:navigationBarColor" tools:targetApi="21">@color/relay_background</item>
-        <item name="defaultBrandColor">@color/relay_surface_deep</item>
-        <item name="defaultBrandColorDark">@color/relay_background</item>
-        <item name="brandColor">@color/relay_surface_deep</item>
-        <item name="brandAccentColor">@color/relay_primary</item>
+        <item name="android:windowBackground">@color/scheme_teal_background</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_teal_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_teal_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_teal_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_teal_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="defaultBrandColor">@color/scheme_teal_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_teal_background</item>
+        <item name="brandColor">@color/scheme_teal_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_teal_primary</item>
+        <item name="materialSurface">@color/scheme_teal_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_teal_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_teal_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_teal_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_teal_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_teal_primary_container</item>
+        <item name="materialSecondary">@color/scheme_teal_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_teal_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_teal_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_teal_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_teal_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_teal_outline</item>
+        <item name="materialFocusSurface">@color/scheme_teal_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_teal_primary</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="shelfBackground">@color/shelf_background_dark</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
         <!-- Disable activity transition animations -->
         <item name="android:windowAnimationStyle">@null</item>
         <!-- Make activity fullscreen -->
@@ -121,24 +195,39 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Leanback</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorControlActivated" tools:targetApi="21">@color/relay_primary</item>
-        <item name="android:colorControlHighlight" tools:targetApi="21">@color/relay_focus_fill</item>
-        <item name="android:colorControlNormal" tools:targetApi="21">@color/relay_on_surface_variant</item>
-        <item name="android:textColorPrimary">@color/relay_on_surface</item>
-        <item name="android:textColorSecondary">@color/relay_on_surface_variant</item>
-        <item name="android:navigationBarColor" tools:targetApi="21">@color/relay_background</item>
-        <item name="defaultBrandColor">@color/relay_surface_deep</item>
-        <item name="defaultBrandColorDark">@color/relay_background</item>
-        <item name="brandColor">@color/relay_surface_deep</item>
-        <item name="brandAccentColor">@color/relay_primary</item>
-        <item name="shelfBackground">@color/relay_background</item>
-        <item name="cardDefaultBackground">@color/relay_surface</item>
-        <item name="cardSelectedBackground">@color/relay_on_background</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_teal_primary_container</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_teal_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_teal_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_teal_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_teal_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_teal_background</item>
+        <item name="defaultBrandColor">@color/scheme_teal_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_teal_background</item>
+        <item name="brandColor">@color/scheme_teal_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_teal_primary</item>
+        <item name="materialSurface">@color/scheme_teal_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_teal_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_teal_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_teal_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_teal_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_teal_primary_container</item>
+        <item name="materialSecondary">@color/scheme_teal_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_teal_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_teal_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_teal_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_teal_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_teal_outline</item>
+        <item name="materialFocusSurface">@color/scheme_teal_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_teal_primary</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
+        <item name="cardDefaultBackground">@color/scheme_teal_surface</item>
+        <item name="cardSelectedBackground">@color/scheme_teal_on_surface</item>
         <item name="android:fontFamily">sans-serif</item>
         <!-- AppDialogFragment background dimming -->
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
-        <item name="android:colorPrimary" tools:targetApi="21">@color/fastlane_background_dark</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_teal_primary</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_teal_background</item>
         <!-- Disable activity transition animations -->
         <item name="android:windowAnimationStyle">@null</item>
         <!-- Make activity fullscreen -->
@@ -157,62 +246,227 @@
 
     <!--  Color scheme: Dark Grey  -->
     <style name="App.Theme.DarkGrey.Player" parent="App.Theme.Leanback.Player">
-        <item name="playbackProgressPrimaryColor">@color/relay_primary</item>
-        <item name="playbackProgressSecondaryColor">@color/relay_primary_container</item>
-        <item name="playbackControlsIconHighlightColor">@color/relay_primary</item>
+        <item name="android:windowBackground">@color/scheme_grey_surface_deep</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_grey_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_grey_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_grey_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_grey_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_grey_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_grey_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_grey_surface_deep</item>
+        <item name="defaultBrandColor">@color/scheme_grey_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_grey_surface_deep</item>
+        <item name="brandColor">@color/scheme_grey_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_grey_primary</item>
+        <item name="materialSurface">@color/scheme_grey_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_grey_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_grey_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_grey_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_grey_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_grey_primary_container</item>
+        <item name="materialSecondary">@color/scheme_grey_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_grey_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_grey_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_grey_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_grey_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_grey_outline</item>
+        <item name="materialFocusSurface">@color/scheme_grey_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_grey_primary</item>
+        <item name="playbackProgressPrimaryColor">@color/scheme_grey_primary</item>
+        <item name="playbackProgressSecondaryColor">@color/scheme_grey_primary_container</item>
+        <item name="playbackControlsIconHighlightColor">@color/scheme_grey_primary</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Dark</item>
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/relay_primary</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_grey_primary</item>
     </style>
     <style name="App.Theme.DarkGrey.Browse" parent="App.Theme.Leanback.Browse">
         <item name="android:windowBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="brandColor">@color/scheme_grey_background_dark</item>
-        <item name="brandAccentColor">@color/relay_primary</item>
+        <item name="brandAccentColor">@color/scheme_grey_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_grey_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_grey_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_grey_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_grey_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_grey_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_grey_on_surface_variant</item>
+        <item name="materialSurface">@color/scheme_grey_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_grey_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_grey_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_grey_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_grey_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_grey_primary_container</item>
+        <item name="materialSecondary">@color/scheme_grey_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_grey_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_grey_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_grey_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_grey_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_grey_outline</item>
+        <item name="materialFocusSurface">@color/scheme_grey_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_grey_primary</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Dark</item>
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
-        <item name="appLogo">@mipmap/app_logo_semi_red</item>
+        <item name="appLogo">@mipmap/app_logo_semi_grey</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_grey_primary</item>
     </style>
     <style name="ProgressBarHorizontal.Dark" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_bar_red</item>
     </style>
     <style name="App.Theme.DarkGrey.Preferences" parent="App.Theme.Leanback.Preferences">
-        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_background</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/relay_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_primary_container</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_grey_primary</item>
+        <item name="materialSurface">@color/scheme_grey_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_grey_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_grey_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_grey_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_grey_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_grey_primary_container</item>
+        <item name="materialSecondary">@color/scheme_grey_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_grey_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_grey_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_grey_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_grey_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_grey_outline</item>
+        <item name="materialFocusSurface">@color/scheme_grey_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_grey_primary</item>
+    </style>
+    <style name="App.Theme.DarkGrey2.Preferences" parent="App.Theme.DarkGrey.Preferences">
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_mono_primary_container</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_mono_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_mono_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_mono_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_mono_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_mono_on_surface_variant</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_mono_primary</item>
+        <item name="materialSurface">@color/scheme_mono_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_mono_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_mono_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_mono_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_mono_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_mono_primary_container</item>
+        <item name="materialSecondary">@color/scheme_mono_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_mono_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_mono_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_mono_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_mono_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_mono_outline</item>
+        <item name="materialFocusSurface">@color/scheme_mono_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_mono_primary</item>
     </style>
     <style name="App.Theme.DarkGrey.GuidedStep" parent="App.Theme.Leanback.GuidedStep">
         <item name="android:windowBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
+        <item name="materialSurface">@color/scheme_grey_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_grey_surface_variant</item>
+        <item name="materialPrimary">@color/scheme_grey_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_grey_primary_container</item>
+        <item name="materialOnPrimary">@color/scheme_grey_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_grey_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_grey_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_grey_outline</item>
     </style>
     <!--  End Color scheme: Dark Grey  -->
 
     <!--  Color scheme: Red -->
     <style name="App.Theme.Red.Player" parent="App.Theme.Leanback.Player">
-        <item name="playbackProgressPrimaryColor">@color/semi_red</item>
-        <item name="playbackProgressSecondaryColor">@color/light_red</item>
-        <item name="playbackControlsIconHighlightColor">@color/semi_red</item>
+        <item name="android:windowBackground">@color/scheme_red_surface_deep</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_red_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_red_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_red_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_red_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_red_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_red_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_red_on_surface_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/scheme_red_surface_deep</item>
+        <item name="defaultBrandColor">@color/scheme_red_surface_deep</item>
+        <item name="defaultBrandColorDark">@color/scheme_red_surface_deep</item>
+        <item name="brandColor">@color/scheme_red_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_red_primary</item>
+        <item name="materialSurface">@color/scheme_red_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_red_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_red_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_red_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_red_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_red_primary_container</item>
+        <item name="materialSecondary">@color/scheme_red_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_red_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_red_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_red_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_red_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_red_outline</item>
+        <item name="materialFocusSurface">@color/scheme_red_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_red_primary</item>
+        <item name="playbackProgressPrimaryColor">@color/scheme_red_primary</item>
+        <item name="playbackProgressSecondaryColor">@color/scheme_red_secondary</item>
+        <item name="playbackControlsIconHighlightColor">@color/scheme_red_primary</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Red</item>
         <item name="shelfBackground">@color/scheme_red_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_red_card_background_dark</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/semi_red</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_red_primary</item>
     </style>
     <style name="App.Theme.Red.Browse" parent="App.Theme.Leanback.Browse">
         <item name="android:windowBackground">@color/scheme_red_shelf_background_dark</item>
         <item name="brandColor">@color/scheme_red_background_dark</item>
-        <item name="brandAccentColor">@color/semi_red</item>
+        <item name="brandAccentColor">@color/scheme_red_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_red_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_red_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_red_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_red_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_red_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_red_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_red_on_surface_variant</item>
+        <item name="materialSurface">@color/scheme_red_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_red_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_red_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_red_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_red_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_red_primary_container</item>
+        <item name="materialSecondary">@color/scheme_red_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_red_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_red_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_red_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_red_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_red_outline</item>
+        <item name="materialFocusSurface">@color/scheme_red_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_red_primary</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Red</item>
         <item name="shelfBackground">@color/scheme_red_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_red_card_background_dark</item>
         <item name="appLogo">@mipmap/app_logo_semi_red</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_red_primary</item>
     </style>
     <style name="App.Theme.Red.Preferences" parent="App.Theme.Leanback.Preferences">
-        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_red_background_dark</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/semi_red</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_red_primary_container</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_red_primary</item>
+        <item name="materialSurface">@color/scheme_red_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_red_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_red_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_red_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_red_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_red_primary_container</item>
+        <item name="materialSecondary">@color/scheme_red_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_red_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_red_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_red_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_red_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_red_outline</item>
+        <item name="materialFocusSurface">@color/scheme_red_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_red_primary</item>
     </style>
     <style name="App.Theme.Red.GuidedStep" parent="App.Theme.Leanback.GuidedStep">
         <item name="android:windowBackground">@color/scheme_red_shelf_background_dark</item>
         <item name="shelfBackground">@color/scheme_red_shelf_background_dark</item>
+        <item name="materialSurface">@color/scheme_red_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_red_surface_variant</item>
+        <item name="materialPrimary">@color/scheme_red_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_red_primary_container</item>
+        <item name="materialOnPrimary">@color/scheme_red_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_red_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_red_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_red_outline</item>
     </style>
     <style name="ProgressBarHorizontal.Red" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_bar_semi_red</item>
@@ -221,42 +475,83 @@
 
     <!--  Color scheme: Dark Grey (OLED)  -->
     <style name="App.Theme.DarkGrey.OLED.Browse" parent="App.Theme.DarkGrey.Browse">
-        <item name="brandAccentColor">@color/semi_transparent</item>
+        <item name="android:windowBackground">@color/scheme_mono_surface_deep</item>
+        <item name="shelfBackground">@color/scheme_mono_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_grey_primary</item>
         <item name="cardSelectedBackground">@color/card_selected_background_white_grey</item>
         <item name="appLogo">@null</item>
     </style>
     <style name="App.Theme.DarkGrey.OLED.Player" parent="App.Theme.DarkGrey.Player">
+        <item name="android:windowBackground">@color/scheme_mono_surface_deep</item>
+        <item name="shelfBackground">@color/scheme_mono_surface_deep</item>
         <item name="cardSelectedBackground">@color/card_selected_background_white_grey</item>
     </style>
     <!--  End Color scheme: Dark Grey (OLED)  -->
 
     <!--  Color scheme: Teal (OLED)  -->
     <style name="App.Theme.Leanback.OLED.Browse" parent="App.Theme.Leanback.Browse">
-        <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
+        <item name="android:windowBackground">@color/scheme_teal_background</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
         <item name="appLogo">@null</item>
     </style>
     <style name="App.Theme.Leanback.OLED.Player" parent="App.Theme.Leanback.Player">
-        <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
+        <item name="android:windowBackground">@color/scheme_teal_background</item>
+        <item name="shelfBackground">@color/scheme_teal_background</item>
     </style>
     <!--  End Color scheme: Teal (OLED)  -->
 
     <!--  Color scheme: Dark Grey (monochrome)  -->
     <style name="App.Theme.DarkGrey2.OLED.Browse" parent="App.Theme.DarkGrey.OLED.Browse">
-        <item name="android:windowBackground">@color/scheme_red_shelf_background_dark</item>
-        <item name="shelfBackground">@color/scheme_red_shelf_background_dark</item>
+        <item name="android:windowBackground">@color/scheme_mono_surface_deep</item>
+        <item name="shelfBackground">@color/scheme_mono_surface_deep</item>
         <item name="appLogo">@mipmap/app_logo_semi_grey</item>
-        <item name="brandColor">@color/grey</item>
-        <item name="brandAccentColor">@color/grey</item>
-        <item name="cardDefaultBackground">@color/grey</item>
+        <item name="brandColor">@color/scheme_mono_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_mono_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_mono_primary_container</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_mono_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_mono_focus_fill</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_mono_primary</item>
+        <item name="materialSurface">@color/scheme_mono_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_mono_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_mono_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_mono_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_mono_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_mono_primary_container</item>
+        <item name="materialSecondary">@color/scheme_mono_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_mono_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_mono_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_mono_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_mono_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_mono_outline</item>
+        <item name="materialFocusSurface">@color/scheme_mono_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_mono_primary</item>
+        <item name="cardDefaultBackground">@color/scheme_mono_surface</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Grey</item>
     </style>
     <style name="App.Theme.DarkGrey2.OLED.Player" parent="App.Theme.DarkGrey.OLED.Player">
+        <item name="android:windowBackground">@color/scheme_mono_surface_deep</item>
+        <item name="shelfBackground">@color/scheme_mono_surface_deep</item>
         <item name="playbackProgressPrimaryColor">@color/semi_grey</item>
         <item name="playbackProgressSecondaryColor">@color/light_grey</item>
         <item name="playbackControlsIconHighlightColor">@color/grey</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/grey</item>
-        <item name="brandColor">@color/grey</item>
-        <item name="cardDefaultBackground">@color/grey</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_mono_primary</item>
+        <item name="brandColor">@color/scheme_mono_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_mono_primary</item>
+        <item name="materialSurface">@color/scheme_mono_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_mono_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_mono_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_mono_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_mono_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_mono_primary_container</item>
+        <item name="materialSecondary">@color/scheme_mono_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_mono_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_mono_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_mono_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_mono_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_mono_outline</item>
+        <item name="materialFocusSurface">@color/scheme_mono_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_mono_primary</item>
+        <item name="cardDefaultBackground">@color/scheme_mono_surface</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Grey</item>
     </style>
     <style name="ProgressBarHorizontal.Grey" parent="@android:style/Widget.ProgressBar.Horizontal">
@@ -266,32 +561,86 @@
 
     <!--  Color scheme: Dark Blue  -->
     <style name="App.Theme.Leanback.Blue.Browse" parent="App.Theme.Leanback.Browse">
-        <!--<item name="brandColor">@color/scheme_blue_background_dark</item>-->
-        <item name="brandAccentColor">@color/scheme_blue_background</item>
-        <!--<item name="cardDefaultBackground">@color/scheme_blue_background_dark</item>-->
-        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_background</item>
-        <item name="android:windowBackground">@color/scheme_grey_shelf_background_dark</item>
-        <item name="brandColor">@color/scheme_grey_background_dark</item>
-        <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
-        <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_blue_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_blue_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_blue_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_blue_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_blue_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_blue_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_blue_on_surface_variant</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_primary</item>
+        <item name="android:windowBackground">@color/scheme_blue_surface_deep</item>
+        <item name="brandColor">@color/scheme_blue_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_blue_primary</item>
+        <item name="materialSurface">@color/scheme_blue_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_blue_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_blue_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_blue_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_blue_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_blue_primary_container</item>
+        <item name="materialSecondary">@color/scheme_blue_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_blue_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_blue_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_blue_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_blue_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_blue_outline</item>
+        <item name="materialFocusSurface">@color/scheme_blue_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_blue_primary</item>
+        <item name="shelfBackground">@color/scheme_blue_surface_deep</item>
+        <item name="cardDefaultBackground">@color/scheme_blue_surface</item>
     </style>
     <style name="App.Theme.Leanback.Blue.Player" parent="App.Theme.Leanback.Player">
-        <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
-        <!--<item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>-->
-        <!--<item name="cardDefaultBackground">@color/scheme_blue_background_dark</item>-->
-        <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
-        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_background</item>
+        <item name="android:windowBackground">@color/scheme_blue_surface_deep</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_blue_primary_container</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/scheme_blue_surface_deep</item>
+        <item name="android:colorControlActivated" tools:targetApi="21">@color/scheme_blue_primary</item>
+        <item name="android:colorControlHighlight" tools:targetApi="21">@color/scheme_blue_focus_fill</item>
+        <item name="android:colorControlNormal" tools:targetApi="21">@color/scheme_blue_on_surface_variant</item>
+        <item name="android:textColorPrimary">@color/scheme_blue_on_surface</item>
+        <item name="android:textColorSecondary">@color/scheme_blue_on_surface_variant</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_primary</item>
+        <item name="brandColor">@color/scheme_blue_surface_deep</item>
+        <item name="brandAccentColor">@color/scheme_blue_primary</item>
+        <item name="materialSurface">@color/scheme_blue_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_blue_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_blue_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_blue_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_blue_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_blue_primary_container</item>
+        <item name="materialSecondary">@color/scheme_blue_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_blue_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_blue_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_blue_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_blue_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_blue_outline</item>
+        <item name="materialFocusSurface">@color/scheme_blue_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_blue_primary</item>
+        <item name="shelfBackground">@color/scheme_blue_surface_deep</item>
+        <item name="cardDefaultBackground">@color/scheme_blue_surface</item>
     </style>
     <style name="App.Theme.Leanback.Blue.Preferences" parent="App.Theme.Leanback.Preferences">
-        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_background</item>
-        <!--<item name="android:colorPrimary" tools:targetApi="21">@color/scheme_blue_background_dark</item>-->
-        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_background</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/scheme_blue_primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_blue_primary_container</item>
+        <item name="materialSurface">@color/scheme_blue_surface</item>
+        <item name="materialSurfaceVariant">@color/scheme_blue_surface_variant</item>
+        <item name="materialSurfaceElevated">@color/scheme_blue_surface_elevated</item>
+        <item name="materialSurfaceDeep">@color/scheme_blue_surface_deep</item>
+        <item name="materialPrimary">@color/scheme_blue_primary</item>
+        <item name="materialPrimaryContainer">@color/scheme_blue_primary_container</item>
+        <item name="materialSecondary">@color/scheme_blue_secondary</item>
+        <item name="materialSecondaryContainer">@color/scheme_blue_secondary_container</item>
+        <item name="materialOnPrimary">@color/scheme_blue_on_primary</item>
+        <item name="materialOnSurface">@color/scheme_blue_on_surface</item>
+        <item name="materialOnSurfaceVariant">@color/scheme_blue_on_surface_variant</item>
+        <item name="materialOutline">@color/scheme_blue_outline</item>
+        <item name="materialFocusSurface">@color/scheme_blue_primary_container</item>
+        <item name="materialPressedSurface">@color/scheme_blue_primary</item>
     </style>
     <!--  End Color scheme: Dark Blue  -->
 
     <!--  Color scheme: Dark Blue (OLED)  -->
     <style name="App.Theme.Leanback.Blue.OLED.Browse" parent="App.Theme.Leanback.Blue.Browse">
-        <item name="brandAccentColor">@color/semi_transparent</item>
+        <item name="brandAccentColor">@color/scheme_blue_primary</item>
         <item name="cardSelectedBackground">@color/card_selected_background_white_grey</item>
         <item name="appLogo">@null</item>
     </style>

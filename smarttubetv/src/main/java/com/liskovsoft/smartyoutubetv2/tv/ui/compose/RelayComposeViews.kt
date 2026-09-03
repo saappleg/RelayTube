@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.compose
 
 import android.content.Context
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.liskovsoft.smartyoutubetv2.tv.R
 
 /**
  * Compose-in-View entry points for screens that are still hosted by Leanback.
@@ -137,15 +139,15 @@ object RelayComposeViews {
     @Composable
     private fun RelayTheme(context: Context, content: @Composable () -> Unit) {
         val scheme = darkColorScheme(
-            primary = color(context, "relay_primary", "relay_dynamic_accent", "material_dynamic_accent", "fastlane_background"),
-            onPrimary = color(context, "relay_on_background", "card_selected_text_black", "black"),
-            primaryContainer = color(context, "relay_primary_container", "relay_dynamic_accent_soft", "material_dynamic_accent_soft", "fastlane_background_dark"),
-            onPrimaryContainer = color(context, "relay_on_surface", "card_default_text", "white"),
-            surface = color(context, "relay_surface", "relay_dynamic_surface", "material_dynamic_surface", "shelf_background_dark"),
-            onSurface = color(context, "relay_on_surface", "card_default_text", "white"),
-            surfaceVariant = color(context, "relay_surface_variant", "relay_dynamic_surface_variant", "material_dynamic_surface_variant", "card_default_background_dark"),
-            onSurfaceVariant = color(context, "relay_on_surface_variant", "card_default_text", "white"),
-            outline = color(context, "relay_outline", "default_light_grey", "card_default_background_dark")
+            primary = themeColor(context, R.attr.materialPrimary, "relay_primary", "relay_dynamic_accent", "material_dynamic_accent", "fastlane_background"),
+            onPrimary = themeColor(context, R.attr.materialOnPrimary, "relay_on_primary", "relay_on_background", "card_selected_text_black", "black"),
+            primaryContainer = themeColor(context, R.attr.materialPrimaryContainer, "relay_primary_container", "relay_dynamic_accent_soft", "material_dynamic_accent_soft", "fastlane_background_dark"),
+            onPrimaryContainer = themeColor(context, R.attr.materialOnSurface, "relay_on_surface", "card_default_text", "white"),
+            surface = themeColor(context, R.attr.materialSurface, "relay_surface", "relay_dynamic_surface", "material_dynamic_surface", "shelf_background_dark"),
+            onSurface = themeColor(context, R.attr.materialOnSurface, "relay_on_surface", "card_default_text", "white"),
+            surfaceVariant = themeColor(context, R.attr.materialSurfaceVariant, "relay_surface_variant", "relay_dynamic_surface_variant", "material_dynamic_surface_variant", "card_default_background_dark"),
+            onSurfaceVariant = themeColor(context, R.attr.materialOnSurfaceVariant, "relay_on_surface_variant", "card_default_text", "white"),
+            outline = themeColor(context, R.attr.materialOutline, "relay_outline", "default_light_grey", "card_default_background_dark")
         )
 
         MaterialTheme(
@@ -298,5 +300,18 @@ object RelayComposeViews {
             }
         }
         return Color.White
+    }
+
+    private fun themeColor(context: Context, attr: Int, vararg fallbackNames: String): Color {
+        val value = TypedValue()
+        if (context.theme.resolveAttribute(attr, value, true)) {
+            if (value.resourceId != 0) {
+                return Color(ContextCompat.getColor(context, value.resourceId))
+            }
+            if (value.type in TypedValue.TYPE_FIRST_COLOR_INT..TypedValue.TYPE_LAST_COLOR_INT) {
+                return Color(value.data)
+            }
+        }
+        return color(context, *fallbackNames)
     }
 }

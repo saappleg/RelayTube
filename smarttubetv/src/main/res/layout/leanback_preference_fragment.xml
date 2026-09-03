@@ -23,7 +23,7 @@
     android:id="@+id/main_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lb_preference_decor_list_background"
+    android:background="?attr/materialSurface"
     android:orientation="vertical"
     android:transitionGroup="false"
     >
@@ -32,7 +32,7 @@
         android:id="@+id/decor_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/defaultBrandColor"
+        android:background="?attr/materialPrimaryContainer"
         android:elevation="@dimen/lb_preference_decor_title_container_elevation"
         android:transitionGroup="false"
         >
@@ -48,7 +48,7 @@
             android:textStyle="bold"
             android:gravity="center_vertical"
             android:textSize="@dimen/lb_preference_decor_title_text_size"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="?attr/materialOnSurface"
 
             android:singleLine="false"
             android:maxLines="2"

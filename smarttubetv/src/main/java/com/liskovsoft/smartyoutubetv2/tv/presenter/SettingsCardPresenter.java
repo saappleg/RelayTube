@@ -7,6 +7,7 @@ import android.os.Build.VERSION;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.graphics.Color;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,11 +34,12 @@ public class SettingsCardPresenter extends Presenter {
         mDefaultBackgroundColor =
                 ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardDefaultBackground));
         mDefaultTextColor =
-                ContextCompat.getColor(context, R.color.card_default_text);
+                MaterialThemeColors.color(context, R.attr.materialOnSurface, Color.WHITE);
         mSelectedBackgroundColor =
-                ContextCompat.getColor(context, R.color.card_selected_background_white);
+                MaterialThemeColors.color(context, R.attr.materialFocusSurface,
+                        ContextCompat.getColor(context, R.color.card_selected_background_white));
         mSelectedTextColor =
-                ContextCompat.getColor(context, R.color.card_selected_text_grey);
+                MaterialThemeColors.color(context, R.attr.materialOnPrimary, Color.BLACK);
 
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             FrameLayout container = new FrameLayout(context);
@@ -90,6 +92,7 @@ public class SettingsCardPresenter extends Presenter {
 
         if (viewHolder instanceof ComposeSettingsCardViewHolder) {
             ((ComposeSettingsCardViewHolder) viewHolder).bind(settingsItem);
+            viewHolder.view.setContentDescription(settingsItem.title);
             return;
         }
 

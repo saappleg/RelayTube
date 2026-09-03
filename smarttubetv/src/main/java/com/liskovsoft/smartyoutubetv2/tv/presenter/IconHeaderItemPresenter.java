@@ -1,8 +1,10 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,8 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDefaultIcon = new ColorDrawable(ContextCompat.getColor(viewGroup.getContext(), R.color.lb_grey));
 
-        View view = inflater.inflate(R.layout.icon_header_item, null);
+        View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
+        view.setBackground(new GradientDrawable());
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
 
         return new ViewHolder(view);
@@ -62,6 +65,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
 
         View rootView = viewHolder.view;
         rootView.setFocusable(true);
+        rootView.setContentDescription(headerItem.getName());
 
         ImageView iconView = rootView.findViewById(R.id.header_icon);
         if (iconView != null) {
@@ -82,6 +86,8 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
+            label.setTextColor(MaterialThemeColors.color(
+                    rootView.getContext(), R.attr.materialOnSurface, Color.WHITE));
         }
     }
 
@@ -94,8 +100,39 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
     // mUnselectAlpha, and also assumes the xml inflation will return a RowHeaderView.
     @Override
     protected void onSelectLevelChanged(RowHeaderPresenter.ViewHolder holder) {
-        holder.view.setAlpha(mUnselectedAlpha + holder.getSelectLevel() *
-                (1.0f - mUnselectedAlpha));
+        float level = holder.getSelectLevel();
+        View rootView = holder.view;
+        rootView.setAlpha(mUnselectedAlpha + level * (1.0f - mUnselectedAlpha));
+        rootView.setScaleX(1.0f + level * 0.035f);
+        rootView.setScaleY(1.0f + level * 0.035f);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            rootView.setElevation(MaterialThemeColors.dp(rootView.getContext(), 8f * level));
+        }
+
+        int surface = MaterialThemeColors.color(
+                rootView.getContext(), R.attr.materialSurfaceVariant, Color.TRANSPARENT);
+        int primary = MaterialThemeColors.color(
+                rootView.getContext(), R.attr.materialPrimary, Color.WHITE);
+        int outline = MaterialThemeColors.color(
+                rootView.getContext(), R.attr.materialOutline, primary);
+        Drawable background = rootView.getBackground();
+        if (background instanceof GradientDrawable) {
+            GradientDrawable tab = (GradientDrawable) background;
+            tab.setCornerRadius(MaterialThemeColors.dp(rootView.getContext(), 22f));
+            tab.setColor(MaterialThemeColors.withAlpha(
+                    MaterialThemeColors.blend(surface, primary, 0.24f), Math.round(0xf2 * level)));
+            tab.setStroke(MaterialThemeColors.dp(rootView.getContext(), 1f),
+                    MaterialThemeColors.withAlpha(outline, Math.round(0xcc * level)));
+        }
+
+        TextView label = rootView.findViewById(R.id.header_label);
+        if (label != null) {
+            int onSurface = MaterialThemeColors.color(
+                    rootView.getContext(), R.attr.materialOnSurface, Color.WHITE);
+            int onPrimary = MaterialThemeColors.color(
+                    rootView.getContext(), R.attr.materialOnPrimary, onSurface);
+            label.setTextColor(MaterialThemeColors.blend(onSurface, onPrimary, level));
+        }
     }
 
     private final RequestListener<Drawable> mErrorListener = new RequestListener<Drawable>() {

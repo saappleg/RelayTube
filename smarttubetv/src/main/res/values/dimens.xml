@@ -69,6 +69,9 @@
     <dimen name="lb_preference_decor_title_margin_bottom">10dp</dimen>
     <dimen name="lb_preference_decor_title_margin_end">24dp</dimen>
 
+    <!-- Material settings sheet -->
+    <dimen name="material_settings_pane_width">440dp</dimen>
+
     <!-- Make in-app logo smaller -->
     <dimen name="lb_browse_title_icon_height">50dp</dimen>
     <dimen name="lb_browse_title_height">50dp</dimen>
