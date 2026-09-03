@@ -379,7 +379,6 @@
         <item name="materialOutline">@color/scheme_grey_outline</item>
         <item name="materialFocusSurface">@color/scheme_grey_primary_container</item>
         <item name="materialPressedSurface">@color/scheme_grey_primary</item>
-        <item name="cardSelectedBackground">@color/scheme_grey_secondary</item>
     </style>
     <style name="App.Theme.DarkGrey2.Preferences" parent="App.Theme.DarkGrey.Preferences">
         <item name="defaultBrandColor">@color/scheme_mono_surface_deep</item>
