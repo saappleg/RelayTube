@@ -5,7 +5,7 @@
     android:id="@+id/settings_dialog_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_87pc"
+    android:background="#73000000"
     tools:ignore="Overdraw,UnusedResources">
 
     <FrameLayout
