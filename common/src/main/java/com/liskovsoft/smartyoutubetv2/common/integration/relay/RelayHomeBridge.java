@@ -35,15 +35,27 @@ import java.util.Set;
 import io.reactivex.disposables.Disposable;
 
 /**
- * Relay Home integration for the stable RelayTube package.
+ * Relay Home integration for the installed RelayTube flavor.
  *
  * <p>The bridge is deliberately best-effort. Relay Home can still use the public
  * MediaSession/notification metadata when the account or feed APIs are unavailable.</p>
  */
 public final class RelayHomeBridge {
     public static final String RELAY_HOME_PACKAGE = "com.relayhome.launcher";
+    /** Legacy stable defaults retained for source compatibility; runtime calls use the app id. */
     public static final String RELAY_TUBE_PACKAGE = "com.relaytube.stable";
     public static final String RELAY_PROFILES_AUTHORITY = "com.relaytube.stable.relayprofiles";
+
+    /** Returns the package id of the running alpha, beta, stable, or F-Droid flavor. */
+    public static String getRelayTubePackage(@Nullable Context context) {
+        Context appContext = context != null ? context.getApplicationContext() : null;
+        return appContext != null ? appContext.getPackageName() : RELAY_TUBE_PACKAGE;
+    }
+
+    /** Returns the profile provider authority belonging to the running flavor. */
+    public static String getRelayProfilesAuthority(@Nullable Context context) {
+        return getRelayTubePackage(context) + ".relayprofiles";
+    }
 
     public static final String ACTION_PLAYBACK = "com.relaytube.action.PLAYBACK";
     public static final String ACTION_SUBSCRIPTIONS = "com.relaytube.action.SUBSCRIPTIONS";
@@ -115,7 +127,7 @@ public final class RelayHomeBridge {
         if (appContext == null) {
             return;
         }
-        if (!isStablePackage(appContext)) {
+        if (!isRelayTubePackage(appContext)) {
             return;
         }
 
@@ -234,7 +246,7 @@ public final class RelayHomeBridge {
     }
 
     public static void publishProfiles(@Nullable Context context) {
-        if (!isStablePackage(context)) {
+        if (!isRelayTubePackage(context)) {
             return;
         }
 
@@ -252,7 +264,7 @@ public final class RelayHomeBridge {
 
     public static void publishPlayback(@Nullable Context context, @Nullable Video video,
                                        long positionMs, long durationMs, boolean playing) {
-        if (!isStablePackage(context) || video == null || TextUtils.isEmpty(video.videoId)
+        if (!isRelayTubePackage(context) || video == null || TextUtils.isEmpty(video.videoId)
                 || TextUtils.isEmpty(video.getTitle())) {
             return;
         }
@@ -263,7 +275,8 @@ public final class RelayHomeBridge {
                 .putExtra(EXTRA_TITLE, video.getTitle())
                 .putExtra(EXTRA_POSITION_MS, Math.max(0L, positionMs))
                 .putExtra(EXTRA_DURATION_MS, Math.max(0L, durationMs))
-                .putExtra(EXTRA_PLAYING, playing);
+                .putExtra(EXTRA_PLAYING, playing)
+                .putExtra(EXTRA_PROFILE_ID, getSelectedProfileId());
         putExtraIfNotEmpty(intent, EXTRA_CHANNEL, video.getAuthor());
         putExtraIfNotEmpty(intent, EXTRA_ARTWORK_URL, firstNonEmpty(video.getCardImageUrl(), video.bgImageUrl));
         putExtraIfNotEmpty(intent, EXTRA_DESCRIPTION, video.description);
@@ -272,7 +285,7 @@ public final class RelayHomeBridge {
     }
 
     public static void refreshFeeds(@Nullable Context context) {
-        if (!isStablePackage(context)) {
+        if (!isRelayTubePackage(context)) {
             return;
         }
 
@@ -334,7 +347,7 @@ public final class RelayHomeBridge {
                 .putString(feedKey(preferencePrefix, profileId), payload)
                 .apply();
 
-        if (!isStablePackage(context)) {
+        if (!isRelayTubePackage(context)) {
             return;
         }
 
@@ -533,8 +546,14 @@ public final class RelayHomeBridge {
         return null;
     }
 
-    private static boolean isStablePackage(@Nullable Context context) {
-        return context != null && RELAY_TUBE_PACKAGE.equals(context.getApplicationContext().getPackageName());
+    private static boolean isRelayTubePackage(@Nullable Context context) {
+        if (context == null || context.getApplicationContext() == null) {
+            return false;
+        }
+        String packageName = getRelayTubePackage(context);
+        return "com.relaytube.beta".equals(packageName)
+                || "com.relaytube.stable".equals(packageName)
+                || "com.relaytube.fdroid".equals(packageName);
     }
 
     private static void sendBroadcast(@Nullable Context context, Intent intent) {
