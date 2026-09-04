@@ -64,20 +64,20 @@ jobs:
           # Pre-release channels use a monotonically increasing suffix so a new
           # upload cannot silently replace an earlier alpha/beta build.
           if [ "$CHANNEL" = "alpha" ] || [ "$CHANNEL" = "beta" ]; then
-            case "$VERSION_NAME" in
-              *-"$CHANNEL".[0-9]*) ;;
-              *) echo "${CHANNEL} releases must use a name such as 32.40-${CHANNEL}.1"; exit 1 ;;
-            esac
+            if [[ ! "$VERSION_NAME" =~ ^.+-${CHANNEL}\.([0-9]+)$ ]]; then
+              echo "${CHANNEL} releases must use a name such as 32.40-${CHANNEL}.1"
+              exit 1
+            fi
+            requested_number="${BASH_REMATCH[1]}"
 
             current_name="$(gh release view "relaytube-$CHANNEL" --json name --jq .name 2>/dev/null || true)"
             if [ -n "$current_name" ]; then
               current_version="${current_name#RelayTube }"
-              case "$current_version" in
-                *-"$CHANNEL".[0-9]*) ;;
-                *) echo "Cannot determine the current ${CHANNEL} release number from: $current_name"; exit 1 ;;
-              esac
-              current_number="${current_version##*.}"
-              requested_number="${VERSION_NAME##*.}"
+              if [[ ! "$current_version" =~ ^.+-${CHANNEL}\.([0-9]+)$ ]]; then
+                echo "Cannot determine the current ${CHANNEL} release number from: $current_name"
+                exit 1
+              fi
+              current_number="${BASH_REMATCH[1]}"
               test "$requested_number" -eq $((current_number + 1))
             fi
           fi
