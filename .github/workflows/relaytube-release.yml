@@ -48,13 +48,39 @@ jobs:
 
       - name: Validate release inputs
         env:
+          GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel }}
           VERSION_CODE: ${{ inputs.version_code }}
           VERSION_NAME: ${{ inputs.version_name }}
         run: |
+          case "$VERSION_CODE" in
+            ''|*[!0-9]*) exit 1 ;;
+          esac
           test "$VERSION_CODE" -gt 2429
           case "$VERSION_NAME" in
             *[!0-9A-Za-z._-]*) exit 1 ;;
           esac
+
+          # Pre-release channels use a monotonically increasing suffix so a new
+          # upload cannot silently replace an earlier alpha/beta build.
+          if [ "$CHANNEL" = "alpha" ] || [ "$CHANNEL" = "beta" ]; then
+            case "$VERSION_NAME" in
+              *-"$CHANNEL".[0-9]*) ;;
+              *) echo "${CHANNEL} releases must use a name such as 32.40-${CHANNEL}.1"; exit 1 ;;
+            esac
+
+            current_name="$(gh release view "relaytube-$CHANNEL" --json name --jq .name 2>/dev/null || true)"
+            if [ -n "$current_name" ]; then
+              current_version="${current_name#RelayTube }"
+              case "$current_version" in
+                *-"$CHANNEL".[0-9]*) ;;
+                *) echo "Cannot determine the current ${CHANNEL} release number from: $current_name"; exit 1 ;;
+              esac
+              current_number="${current_version##*.}"
+              requested_number="${VERSION_NAME##*.}"
+              test "$requested_number" -eq $((current_number + 1))
+            fi
+          fi
 
       - name: Configure RelayTube signing
         env:
