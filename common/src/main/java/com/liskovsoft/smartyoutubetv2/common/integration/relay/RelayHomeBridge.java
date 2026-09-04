@@ -174,13 +174,11 @@ public final class RelayHomeBridge {
                 profileId = snapshot.selectedId;
                 saveProfiles(prefs, profilesJson, profileId);
             } else {
-                String cachedProfiles = prefs.getString(PREF_PROFILES, null);
-                if (!TextUtils.isEmpty(cachedProfiles)) {
-                    profilesJson = cachedProfiles;
-                    profileId = prefs.getString(PREF_PROFILE_ID, GUEST_PROFILE_ID);
-                } else {
-                    profilesJson = createGuestProfiles();
-                }
+                // An empty account list is an authoritative signed-out state. Do not
+                // expose an account cached from a previous session to Relay Home.
+                profilesJson = createGuestProfiles();
+                profileId = GUEST_PROFILE_ID;
+                saveProfiles(prefs, profilesJson, profileId);
             }
         } catch (Throwable ignored) {
             String cachedProfiles = prefs.getString(PREF_PROFILES, null);
@@ -317,7 +315,7 @@ public final class RelayHomeBridge {
             sSubscriptionsAction = RxHelper.execute(
                     contentService.getSubscriptionsObserve(),
                     group -> {
-                        String payload = mediaGroupToJson(group);
+                        String payload = mediaGroupToJson(appContext, group);
                         publishFeed(appContext, ACTION_SUBSCRIPTIONS, profileId, payload, PREF_SUBSCRIPTIONS_PREFIX);
                     },
                     error -> {
@@ -389,13 +387,14 @@ public final class RelayHomeBridge {
         }
     }
 
-    private static String mediaGroupToJson(@Nullable MediaGroup group) {
+    private static String mediaGroupToJson(Context context, @Nullable MediaGroup group) {
         if (group == null || group.getMediaItems() == null) {
             return EMPTY_JSON;
         }
 
         JSONArray result = new JSONArray();
         Set<String> videoIds = new HashSet<>();
+        VideoStateService stateService = VideoStateService.instance(context);
         try {
             for (MediaItem mediaItem : group.getMediaItems()) {
                 if (result.length() >= MAX_FEED_VIDEOS || mediaItem == null) {
@@ -405,8 +404,8 @@ public final class RelayHomeBridge {
                 if (video == null || TextUtils.isEmpty(video.videoId) || !videoIds.add(video.videoId)) {
                     continue;
                 }
-                VideoStateService.State state = VideoStateService.instance(null) != null
-                        ? VideoStateService.instance(null).getByVideoId(video.videoId) : null;
+                VideoStateService.State state = stateService != null
+                        ? stateService.getByVideoId(video.videoId) : null;
                 long positionMs = state != null ? state.positionMs : video.getPositionMs();
                 long durationMs = state != null && state.durationMs > 0 ? state.durationMs : video.getDurationMs();
                 result.put(videoToJson(video, positionMs, durationMs));
