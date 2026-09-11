@@ -9,7 +9,6 @@ on:
         required: true
         type: choice
         options:
-          - alpha
           - beta
           - stable
       version_name:
@@ -73,10 +72,6 @@ jobs:
       - name: Select build flavor
         run: |
           case "${{ inputs.channel }}" in
-            alpha)
-              echo "FLAVOR=stbeta" >> "$GITHUB_ENV"
-              echo "TAG_NAME=relaytube-alpha" >> "$GITHUB_ENV"
-              ;;
             beta)
               echo "FLAVOR=stbeta" >> "$GITHUB_ENV"
               echo "TAG_NAME=relaytube-beta" >> "$GITHUB_ENV"
@@ -155,8 +150,8 @@ jobs:
             release-assets/relaytube-update.json >/dev/null
           jq empty release-assets/relaytube-update.json
 
-      - name: Publish rolling alpha or beta release
-        if: inputs.channel == 'alpha' || inputs.channel == 'beta'
+      - name: Publish rolling beta release
+        if: inputs.channel == 'beta'
         env:
           GH_TOKEN: ${{ github.token }}
           CHANNEL: ${{ inputs.channel }}

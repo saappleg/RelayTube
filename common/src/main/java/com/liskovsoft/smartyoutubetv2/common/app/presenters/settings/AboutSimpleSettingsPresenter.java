@@ -12,11 +12,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.ATVBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AmazonBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter;
-import com.liskovsoft.smartyoutubetv2.common.integration.relay.RelayUpdatePreferences;
-import com.liskovsoft.smartyoutubetv2.common.integration.relay.RelayUpdatePreferences.Channel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
     private final AppUpdateChecker mUpdateChecker;
@@ -34,14 +29,12 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
     public void show() {
         String appName = getContext().getString(R.string.app_name);
         String mainTitle = String.format("%s %s",
-                RelayUpdatePreferences.isRelayTube(getContext()) ? appName : appName + " MOD",
+                appName,
                 AppInfoHelpers.getAppVersionName(getContext()));
 
         AppDialogPresenter settingsPresenter = AppDialogPresenter.instance(getContext());
 
         appendAutoUpdateSwitch(settingsPresenter);
-
-        appendRelayUpdateChannel(settingsPresenter);
 
         appendUpdateCheckButton(settingsPresenter);
 
@@ -62,34 +55,6 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
                 option -> AppUpdatePresenter.instance(getContext()).start(true));
 
         settingsPresenter.appendSingleButton(updateCheckOption);
-    }
-
-    private void appendRelayUpdateChannel(AppDialogPresenter settingsPresenter) {
-        if (!RelayUpdatePreferences.isRelayTube(getContext())) {
-            return;
-        }
-
-        RelayUpdatePreferences preferences = RelayUpdatePreferences.instance(getContext());
-        List<OptionItem> channels = new ArrayList<>();
-
-        if (preferences.supportsChannel(Channel.ALPHA)) {
-            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_alpha),
-                    option -> preferences.setChannel(Channel.ALPHA),
-                    preferences.getChannel() == Channel.ALPHA));
-        }
-        if (preferences.supportsChannel(Channel.STABLE)) {
-            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_stable),
-                    option -> preferences.setChannel(Channel.STABLE),
-                    preferences.getChannel() == Channel.STABLE));
-        }
-        if (preferences.supportsChannel(Channel.BETA)) {
-            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_beta),
-                    option -> preferences.setChannel(Channel.BETA),
-                    preferences.getChannel() == Channel.BETA));
-        }
-
-        settingsPresenter.appendRadioCategory(
-                getContext().getString(R.string.relay_update_channel), channels);
     }
 
     private void appendInstallBridge(AppDialogPresenter settingsPresenter) {

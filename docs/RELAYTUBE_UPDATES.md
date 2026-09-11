@@ -1,17 +1,17 @@
 # RelayTube update channels
 
 RelayTube updates are separate from SmartTube. The app checks only the
-`saappleg/RelayTube` GitHub releases when its package name is
-`com.relaytube.stable`.
+`saappleg/RelayTube` GitHub releases.
 
 - **Stable** reads `relaytube-update.json` from the latest non-prerelease GitHub
   release.
 - **Beta** reads the same manifest name from the rolling `relaytube-beta`
   prerelease.
 
-Users can choose the channel under **Settings → About → RelayTube update
-channel**. Prerelease builds default to Beta and production builds default to
-Stable. Switching channels does not change the package or erase app data.
+The Beta and Stable APKs are separate flavors and packages, matching the
+original source layout. Beta installs use `com.relaytube.beta`; Stable installs
+use `com.relaytube.stable`. An older RelayTube Alpha 4 install used the Beta
+package and can update in place from the Beta feed.
 
 ## Publishing
 
@@ -42,5 +42,4 @@ request:
 
 - `.github/workflows/relaytube-release.yml`
 - this document
-- `RelayUpdatePreferences`
-- Relay update resources and the two small settings/presenter hooks
+- RelayTube-specific flavor update resources

@@ -3,10 +3,4 @@
     <string-array name="update_urls">
         <item>https://github.com/saappleg/RelayTube/releases/latest/download/relaytube-update.json</item>
     </string-array>
-    <string-array name="relay_update_urls_stable">
-        <item>https://github.com/saappleg/RelayTube/releases/latest/download/relaytube-update.json</item>
-    </string-array>
-    <string-array name="relay_update_urls_beta">
-        <item>https://github.com/saappleg/RelayTube/releases/download/relaytube-beta/relaytube-update.json</item>
-    </string-array>
 </resources>
