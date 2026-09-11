@@ -229,6 +229,7 @@ public class ChannelsProvider {
         if (publishedId != -1) {
             Log.d(TAG, "Oops: channel already published. Doing update instead... publishedId: " + publishedId);
             updateChannel(context, playlist);
+            requestChannelBrowsableIfDefault(context, playlist, publishedId);
             //addClipsToChannel(context, publishedId, Helpers.isGoogleTVLauncher(context) || channel.isBrowsable() ? playlist.getClips() : Collections.emptyList());
             addClipsToChannel(context, publishedId, playlist.getClips());
             return;
@@ -240,6 +241,7 @@ public class ChannelsProvider {
             Log.d(TAG, "Oops: channel already published but not memorized by the app. Doing update instead... foundId: " + channel.getId());
             playlist.setPublishedId(channel.getId());
             updateChannel(context, playlist);
+            requestChannelBrowsableIfDefault(context, playlist, channel.getId());
             //addClipsToChannel(context, channel.getId(), Helpers.isGoogleTVLauncher(context) || channel.isBrowsable() ? playlist.getClips() : Collections.emptyList());
             addClipsToChannel(context, channel.getId(), playlist.getClips());
             return;
@@ -280,11 +282,15 @@ public class ChannelsProvider {
         writeChannelLogo(context, channelId, playlist.getLogoResId());
 
         // Google TV fix (no dialog to enable the channels)
-        if (playlist.isDefault()) {
-            TvContractCompat.requestChannelBrowsable(context, channelId);
-        }
+        requestChannelBrowsableIfDefault(context, playlist, channelId);
 
         return channelId;
+    }
+
+    private static void requestChannelBrowsableIfDefault(Context context, Playlist playlist, long channelId) {
+        if (playlist.isDefault() && channelId != -1) {
+            TvContractCompat.requestChannelBrowsable(context, channelId);
+        }
     }
 
     @WorkerThread

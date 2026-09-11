@@ -45,7 +45,7 @@ public class ClipService {
                 SUBSCRIPTIONS_URL,
                 R.drawable.generic_channels,
                 ContentService::getSubscriptions,
-                false
+                true
         );
     }
 
