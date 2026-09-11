@@ -1,4 +1,4 @@
-# RelayTube update channels
+# RelayTube update paths
 
 RelayTube updates are separate from SmartTube. The app checks only the
 `saappleg/RelayTube` GitHub releases.
@@ -7,6 +7,9 @@ RelayTube updates are separate from SmartTube. The app checks only the
   release.
 - **Beta** reads the same manifest name from the rolling `relaytube-beta`
   prerelease.
+
+The path can be selected in **Settings → About → RelayTube update path**. The
+default is Beta for the beta package and Stable for the stable package.
 
 The Beta and Stable APKs are separate flavors and packages, matching the
 original source layout. Beta installs use `com.relaytube.beta`; Stable installs

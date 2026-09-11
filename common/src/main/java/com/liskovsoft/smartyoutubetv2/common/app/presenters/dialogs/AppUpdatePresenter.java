@@ -12,6 +12,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
+import com.liskovsoft.smartyoutubetv2.common.integration.relay.RelayUpdatePreferences;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
 import com.liskovsoft.smartyoutubetv2.common.utils.LoadingManager;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -48,7 +49,9 @@ public class AppUpdatePresenter extends BasePresenter<Void> implements AppUpdate
 
     public void start(boolean forceCheck) {
         mIsForceCheck = forceCheck;
-        String[] updateManifestUrls = getContext().getResources().getStringArray(R.array.update_urls);
+        String[] updateManifestUrls = RelayUpdatePreferences.isRelayTube(getContext())
+                ? RelayUpdatePreferences.instance(getContext()).getManifestUrls()
+                : getContext().getResources().getStringArray(R.array.update_urls);
 
         if (forceCheck) {
             LoadingManager.showLoading(getContext(), true);
@@ -77,6 +80,8 @@ public class AppUpdatePresenter extends BasePresenter<Void> implements AppUpdate
 
             if (AppUpdateCheckerListener.LATEST_VERSION.equals(error.getMessage())) {
                 MessageHelpers.showMessage(getContext(), R.string.update_not_found);
+            } else if (RelayUpdatePreferences.isRelayTube(getContext())) {
+                MessageHelpers.showMessage(getContext(), R.string.relay_update_feed_error);
             } else {
                 MessageHelpers.showMessage(getContext(), String.format("%s: %s", getContext().getString(R.string.update_error),
                         error.getCause() != null ? error.getCause().getMessage() : error.getMessage()));
