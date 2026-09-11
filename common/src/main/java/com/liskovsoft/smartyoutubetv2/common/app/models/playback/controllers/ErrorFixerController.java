@@ -54,14 +54,13 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             MessageHelpers.showLongMessage(getContext(), "Fixing stalled client...");
             YouTubeServiceManager.instance().applyNoPlaybackFix();
             mVideoLoaderController.reloadVideo();
-        } else if (!getPlayerTweaksData().isNetworkErrorFixingDisabled()) {
-            // Possibly ISP ban
-            //switchNextEngine();
-            //mVideoLoaderController.restartEngine();
-
+        } else {
             // NOTE: The bug. Avoid calling reloadVideo() after lowering the quality.
             // This will change current format to 'Disabled'. Do restartEngine() instead.
-            lowerVideoQuality();
+            //lowerVideoQuality();
+            //mVideoLoaderController.restartEngine();
+
+            // SABR may hang if the server issues a high backoffTime
             mVideoLoaderController.restartEngine();
         }
     }
@@ -299,6 +298,9 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
 
         if (!Helpers.containsAny(message, "fromNullable result is null")) {
             MessageHelpers.showLongMessage(getContext(), fullMsg);
+            if (getPlayer() != null) {
+                getPlayer().setTitle(fullMsg);
+            }
         }
 
         if (Utils.fixRetrofitErrors(getContext(), error)) {
