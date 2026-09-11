@@ -48,7 +48,7 @@ jobs:
           VERSION_CODE: ${{ inputs.version_code }}
           VERSION_NAME: ${{ inputs.version_name }}
         run: |
-          test "$VERSION_CODE" -gt 2421
+          test "$VERSION_CODE" -gt 2434
           case "$VERSION_NAME" in
             *[!0-9A-Za-z._-]*) exit 1 ;;
           esac
