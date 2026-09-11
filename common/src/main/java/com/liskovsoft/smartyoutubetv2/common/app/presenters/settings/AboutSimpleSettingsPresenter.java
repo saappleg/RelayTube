@@ -72,12 +72,21 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
         RelayUpdatePreferences preferences = RelayUpdatePreferences.instance(getContext());
         List<OptionItem> channels = new ArrayList<>();
 
-        channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_stable),
-                option -> preferences.setChannel(Channel.STABLE),
-                preferences.getChannel() == Channel.STABLE));
-        channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_beta),
-                option -> preferences.setChannel(Channel.BETA),
-                preferences.getChannel() == Channel.BETA));
+        if (preferences.supportsChannel(Channel.ALPHA)) {
+            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_alpha),
+                    option -> preferences.setChannel(Channel.ALPHA),
+                    preferences.getChannel() == Channel.ALPHA));
+        }
+        if (preferences.supportsChannel(Channel.STABLE)) {
+            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_stable),
+                    option -> preferences.setChannel(Channel.STABLE),
+                    preferences.getChannel() == Channel.STABLE));
+        }
+        if (preferences.supportsChannel(Channel.BETA)) {
+            channels.add(UiOptionItem.from(getContext().getString(R.string.relay_update_channel_beta),
+                    option -> preferences.setChannel(Channel.BETA),
+                    preferences.getChannel() == Channel.BETA));
+        }
 
         settingsPresenter.appendRadioCategory(
                 getContext().getString(R.string.relay_update_channel), channels);

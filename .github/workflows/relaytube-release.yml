@@ -9,6 +9,7 @@ on:
         required: true
         type: choice
         options:
+          - alpha
           - beta
           - stable
       version_name:
@@ -69,13 +70,32 @@ jobs:
             echo "keyPassword=$KEY_PASSWORD"
           } > keystore.properties
 
+      - name: Select build flavor
+        run: |
+          case "${{ inputs.channel }}" in
+            alpha)
+              echo "FLAVOR=stbeta" >> "$GITHUB_ENV"
+              echo "TAG_NAME=relaytube-alpha" >> "$GITHUB_ENV"
+              ;;
+            beta)
+              echo "FLAVOR=stbeta" >> "$GITHUB_ENV"
+              echo "TAG_NAME=relaytube-beta" >> "$GITHUB_ENV"
+              ;;
+            stable)
+              echo "FLAVOR=ststable" >> "$GITHUB_ENV"
+              echo "TAG_NAME=v${{ inputs.version_name }}" >> "$GITHUB_ENV"
+              ;;
+            *) exit 1 ;;
+          esac
+
       - name: Build signed RelayTube APKs
         env:
           RELAYTUBE_VERSION_CODE: ${{ inputs.version_code }}
           RELAYTUBE_VERSION_NAME: ${{ inputs.version_name }}
         run: |
           chmod +x gradlew
-          ./gradlew :smarttubetv:lintStstableRelease :smarttubetv:assembleStstableRelease
+          ./gradlew ":smarttubetv:lint${FLAVOR^}Release" ":smarttubetv:assemble${FLAVOR^}Release" \
+            -PrelayTubeSideBySide
 
       - name: Prepare release assets and update manifest
         env:
@@ -84,27 +104,22 @@ jobs:
           VERSION_NAME: ${{ inputs.version_name }}
           RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
-          if [ "$CHANNEL" = "beta" ]; then
-            TAG_NAME="relaytube-beta"
-          else
-            TAG_NAME="v${VERSION_NAME}"
-          fi
-          echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
-
           mkdir -p release-assets
-          cp smarttubetv/build/outputs/apk/ststable/release/*_armeabi-v7a.apk release-assets/relaytube-armeabi-v7a.apk
-          cp smarttubetv/build/outputs/apk/ststable/release/*_arm64-v8a.apk release-assets/relaytube-arm64-v8a.apk
-          cp smarttubetv/build/outputs/apk/ststable/release/*_x86.apk release-assets/relaytube-x86.apk
-          cp smarttubetv/build/outputs/apk/ststable/release/*_universal.apk release-assets/relaytube-universal.apk
+          cp "smarttubetv/build/outputs/apk/$FLAVOR/release/"*_armeabi-v7a.apk release-assets/relaytube-armeabi-v7a.apk
+          cp "smarttubetv/build/outputs/apk/$FLAVOR/release/"*_arm64-v8a.apk release-assets/relaytube-arm64-v8a.apk
+          cp "smarttubetv/build/outputs/apk/$FLAVOR/release/"*_x86.apk release-assets/relaytube-x86.apk
+          cp "smarttubetv/build/outputs/apk/$FLAVOR/release/"*_universal.apk release-assets/relaytube-universal.apk
 
           export DOWNLOAD_ROOT="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG_NAME}"
           jq -n \
+            --arg channel "$CHANNEL" \
             --arg name "$VERSION_NAME" \
             --argjson code "$VERSION_CODE" \
             --arg notes "$RELEASE_NOTES" \
             --arg root "$DOWNLOAD_ROOT" \
             '{
               package: {
+                channel: $channel,
                 downloadUrl: ($root + "/relaytube-universal.apk"),
                 downloadUrlList: [($root + "/relaytube-universal.apk")],
                 "downloadUrlList_armeabi-v7a": [($root + "/relaytube-armeabi-v7a.apk"), ($root + "/relaytube-universal.apk")],
@@ -140,24 +155,27 @@ jobs:
             release-assets/relaytube-update.json >/dev/null
           jq empty release-assets/relaytube-update.json
 
-      - name: Publish rolling beta release
-        if: inputs.channel == 'beta'
+      - name: Publish rolling alpha or beta release
+        if: inputs.channel == 'alpha' || inputs.channel == 'beta'
         env:
           GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel }}
+          VERSION_NAME: ${{ inputs.version_name }}
+          RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
-          if gh release view relaytube-beta >/dev/null 2>&1; then
-            gh release upload relaytube-beta release-assets/* --clobber
-            gh release edit relaytube-beta \
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" release-assets/* --clobber
+            gh release edit "$TAG_NAME" \
               --target "$GITHUB_SHA" \
-              --title "RelayTube ${{ inputs.version_name }}" \
-              --notes "${{ inputs.release_notes }}" \
+              --title "RelayTube $VERSION_NAME" \
+              --notes "$RELEASE_NOTES" \
               --prerelease \
               --latest=false
           else
-            gh release create relaytube-beta release-assets/* \
+            gh release create "$TAG_NAME" release-assets/* \
               --target "$GITHUB_SHA" \
-              --title "RelayTube ${{ inputs.version_name }}" \
-              --notes "${{ inputs.release_notes }}" \
+              --title "RelayTube $VERSION_NAME" \
+              --notes "$RELEASE_NOTES" \
               --prerelease \
               --latest=false
           fi

@@ -2,8 +2,6 @@ package com.liskovsoft.smartyoutubetv2.common.integration.relay;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-
 import com.liskovsoft.smartyoutubetv2.common.R;
 
 /**
@@ -13,11 +11,13 @@ import com.liskovsoft.smartyoutubetv2.common.R;
  */
 public final class RelayUpdatePreferences {
     public enum Channel {
+        ALPHA,
         STABLE,
         BETA
     }
 
-    private static final String RELAY_PACKAGE = "com.relaytube.stable";
+    private static final String RELAY_BETA_PACKAGE = "com.relaytube.beta";
+    private static final String RELAY_STABLE_PACKAGE = "com.relaytube.stable";
     private static final String PREFS_NAME = "relaytube.update.preferences";
     private static final String PREF_CHANNEL = "channel";
 
@@ -34,43 +34,67 @@ public final class RelayUpdatePreferences {
     }
 
     public static boolean isRelayTube(Context context) {
-        return context != null && RELAY_PACKAGE.equals(context.getPackageName());
+        return context != null && (RELAY_BETA_PACKAGE.equals(context.getPackageName())
+                || RELAY_STABLE_PACKAGE.equals(context.getPackageName()));
     }
 
     public Channel getChannel() {
         String value = mPreferences.getString(PREF_CHANNEL, getDefaultChannel().name());
 
         try {
-            return Channel.valueOf(value);
+            Channel channel = Channel.valueOf(value);
+            return supportsChannel(channel) ? channel : getDefaultChannel();
         } catch (IllegalArgumentException ignored) {
-            return Channel.STABLE;
+            return getDefaultChannel();
         }
     }
 
     public void setChannel(Channel channel) {
-        mPreferences.edit().putString(PREF_CHANNEL, channel.name()).apply();
+        if (supportsChannel(channel)) {
+            mPreferences.edit().putString(PREF_CHANNEL, channel.name()).apply();
+        }
     }
 
     public String[] getManifestUrls() {
-        int arrayId = getChannel() == Channel.BETA ?
-                R.array.relay_update_urls_beta : R.array.relay_update_urls_stable;
+        int arrayId;
+        switch (getChannel()) {
+            case ALPHA:
+                arrayId = R.array.relay_update_urls_alpha;
+                break;
+            case BETA:
+                arrayId = R.array.relay_update_urls_beta;
+                break;
+            default:
+                arrayId = R.array.relay_update_urls_stable;
+                break;
+        }
+
         return mContext.getResources().getStringArray(arrayId);
     }
 
+    public boolean supportsChannel(Channel channel) {
+        if (RELAY_BETA_PACKAGE.equals(mContext.getPackageName())) {
+            return channel == Channel.ALPHA || channel == Channel.BETA;
+        }
+
+        return RELAY_STABLE_PACKAGE.equals(mContext.getPackageName()) && channel == Channel.STABLE;
+    }
+
     private Channel getDefaultChannel() {
+        if (!RELAY_BETA_PACKAGE.equals(mContext.getPackageName())) {
+            return Channel.STABLE;
+        }
+
         try {
             String versionName = mContext.getPackageManager()
                     .getPackageInfo(mContext.getPackageName(), 0).versionName;
-            if (versionName != null) {
-                String normalized = versionName.toLowerCase(java.util.Locale.US);
-                if (normalized.contains("beta") || normalized.contains("alpha") || normalized.contains("rc")) {
-                    return Channel.BETA;
-                }
+            if (versionName != null && versionName.toLowerCase(java.util.Locale.US).contains("alpha")) {
+                return Channel.ALPHA;
             }
-        } catch (PackageManager.NameNotFoundException ignored) {
-            // The package always exists here; Stable is the safest fallback.
+        } catch (android.content.pm.PackageManager.NameNotFoundException ignored) {
+            // The package always exists here; beta is the safe fallback.
         }
 
-        return Channel.STABLE;
+        return Channel.BETA;
     }
 }
