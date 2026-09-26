@@ -227,21 +227,7 @@ public class MotherActivity extends FragmentActivity {
         super.onPause();
 
         // Stop managing the screensaver so a paused activity cannot keep the display awake.
-        // NOTE: moving suspend to onStop to prevent screen flicker when persistent dimming is enabled
-        if (!mIsBackPressed) {
-            mScreensaverManager.suspend();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // Stop managing the screensaver so a paused activity cannot keep the display awake.
-        // NOTE: moving suspend to onStop to prevent screen flicker when persistent dimming is enabled
-        if (mIsBackPressed) {
-            mScreensaverManager.suspend();
-        }
+        mScreensaverManager.suspend();
     }
 
     @Override
