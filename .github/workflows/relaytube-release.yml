@@ -158,19 +158,21 @@ jobs:
           VERSION_NAME: ${{ inputs.version_name }}
           RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
+          NOTES_BODY=$(printf '![RelayTube beta](https://raw.githubusercontent.com/%s/%s/smarttubetv/src/stbeta/res/mipmap-nodpi/app_banner.png)\n\n%s' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$RELEASE_NOTES")
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
             gh release upload "$TAG_NAME" release-assets/* --clobber
             gh release edit "$TAG_NAME" \
               --target "$GITHUB_SHA" \
               --title "RelayTube $VERSION_NAME" \
-              --notes "$RELEASE_NOTES" \
+              --notes "$NOTES_BODY" \
               --prerelease \
               --latest=false
           else
             gh release create "$TAG_NAME" release-assets/* \
               --target "$GITHUB_SHA" \
               --title "RelayTube $VERSION_NAME" \
-              --notes "$RELEASE_NOTES" \
+              --notes "$NOTES_BODY" \
               --prerelease \
               --latest=false
           fi
@@ -179,9 +181,13 @@ jobs:
         if: inputs.channel == 'stable'
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION_NAME: ${{ inputs.version_name }}
+          RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
+          NOTES_BODY=$(printf '![RelayTube stable](https://raw.githubusercontent.com/%s/%s/smarttubetv/src/ststable/res/mipmap-nodpi/app_banner.png)\n\n%s' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$RELEASE_NOTES")
           gh release create "$TAG_NAME" release-assets/* \
             --target "$GITHUB_SHA" \
-            --title "RelayTube ${{ inputs.version_name }}" \
-            --notes "${{ inputs.release_notes }}" \
+            --title "RelayTube $VERSION_NAME" \
+            --notes "$NOTES_BODY" \
             --latest

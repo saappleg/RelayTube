@@ -25,7 +25,6 @@ public class AppDialogActivity extends MotherActivity {
     private static final String TAG = AppDialogActivity.class.getSimpleName();
     private AppDialogFragment mFragment;
     private GlobalKeyTranslator mGlobalKeyTranslator;
-    private boolean mIsBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +65,8 @@ public class AppDialogActivity extends MotherActivity {
         KeyEvent newEvent = mGlobalKeyTranslator.translate(event);
         return handleNavigation(newEvent) || super.dispatchKeyEvent(newEvent);
     }
-
-    @Override
-    public void onBackPressed() {
-        mIsBackPressed = true;
-        super.onBackPressed();
-    }
-
     @Override
     protected void onResume() {
-        mIsBackPressed = false;
         super.onResume();
         enforceOpaqueSettingsPanel();
     }
@@ -140,8 +131,10 @@ public class AppDialogActivity extends MotherActivity {
             // In this case the back gesture closes dialog instead of return to the previous category.
             // Cause: touchscreen/mouse input flips the view hierarchy into touch mode, which back-handling
             // treats differently than real D-pad input.
-            if (mIsBackPressed && mFragment.canGoBack()) {
+            if (isBackPressed() && mFragment.canGoBack()) {
                 mFragment.goBack();
+                // No additional event like onResume is fired, so we should reset the state explicitly
+                resetBackState();
                 return;
             }
 
