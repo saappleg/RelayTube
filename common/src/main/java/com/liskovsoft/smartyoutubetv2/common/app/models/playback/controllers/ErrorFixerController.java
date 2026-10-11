@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.models.playback.controllers;
 
 import android.annotation.SuppressLint;
 
+import com.google.android.exoplayer2.source.sabr.parser.exceptions.ReloadPlayerResponseError;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.sharedutils.mylogger.Log;
@@ -22,8 +23,11 @@ import java.util.List;
 public class ErrorFixerController extends BasePlayerController implements OnLongBuffering {
     private static final String TAG = ErrorFixerController.class.getSimpleName();
     private static final long STREAM_END_THRESHOLD_MS = 180_000;
+    private static final int MAX_RELOAD_PLAYER_RESPONSE_ATTEMPTS = 3;
     private final BufferingDetector mBufferingDetector = new BufferingDetector(this);
     private VideoLoaderController mVideoLoaderController;
+    private String mReloadPlayerResponseVideoId;
+    private int mReloadPlayerResponseAttempts;
 
     @Override
     public void onInit() {
@@ -91,6 +95,7 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
     @Override
     public void onPlay() {
         mBufferingDetector.onStopBuffering();
+        mReloadPlayerResponseAttempts = 0;
     }
 
     @Override
@@ -126,7 +131,54 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             return;
         }
 
+        if (applyReloadPlayerResponseAction(error)) {
+            return;
+        }
+
         applyEngineErrorAction(type, rendererIndex, error);
+    }
+
+    /**
+     * SABR server sent ReloadPlayerResponse. It won't send any media until the player response is re-fetched with the token.
+     */
+    private boolean applyReloadPlayerResponseAction(Throwable error) {
+        ReloadPlayerResponseError reloadError = findReloadPlayerResponseError(error);
+        Video video = getVideo();
+
+        if (reloadError == null || video == null) {
+            return false;
+        }
+
+        if (!Helpers.equals(video.videoId, mReloadPlayerResponseVideoId)) {
+            mReloadPlayerResponseVideoId = video.videoId;
+            mReloadPlayerResponseAttempts = 0;
+        }
+
+        // Reload doesn't help. Fallback to the common error handling (switch the client).
+        if (++mReloadPlayerResponseAttempts > MAX_RELOAD_PLAYER_RESPONSE_ATTEMPTS) {
+            return false;
+        }
+
+        String reloadMsg = String.format("SABR requested player response reload. Attempt: %s", mReloadPlayerResponseAttempts);
+        Log.e(TAG, reloadMsg);
+        MessageHelpers.showLongMessage(getContext(), reloadMsg);
+
+        YouTubeServiceManager.instance().reloadPlayerResponse(video.videoId, reloadError.reloadPlaybackToken);
+        mVideoLoaderController.reloadVideo();
+
+        return true;
+    }
+
+    private static ReloadPlayerResponseError findReloadPlayerResponseError(Throwable error) {
+        while (error != null) {
+            if (error instanceof ReloadPlayerResponseError) {
+                return (ReloadPlayerResponseError) error;
+            }
+
+            error = error.getCause();
+        }
+
+        return null;
     }
 
     private void applyEngineErrorAction(int type, int rendererIndex, Throwable error) {
@@ -204,8 +256,13 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             getPlayerData().setFormat(FormatItem.AUDIO_HQ_MP4A);
             restartEngine = false;
         } else if (type == PlayerEventListener.ERROR_TYPE_UNEXPECTED) {
-            // IllegalStateException: Buffer too small (5242880 < 7208383)
-            if (Helpers.startsWithAny(errorContent, "Buffer too small", "Invalid to call at Released state; only valid in executing state")) {
+            if (error instanceof NullPointerException) {
+                // SABR extractor throws NPE on subtitle error
+                // NOTE: the engine should be restarted
+                disableSubtitles();
+            } else if (Helpers.startsWithAny(errorContent,
+                    "Buffer too small", "Invalid to call at Released state; only valid in executing state")) {
+                // IllegalStateException: Buffer too small (5242880 < 7208383)
                 // NOTE: The bug. Avoid calling reloadVideo() after lowering the quality.
                 // This will change current format to 'Disabled'. Do restartEngine() instead.
                 lowerVideoQuality();
