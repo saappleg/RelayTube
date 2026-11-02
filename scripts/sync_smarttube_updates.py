@@ -73,6 +73,8 @@ def push_module(path: Path, branch: str) -> None:
         [
             "git",
             "-c",
+            "http.https://github.com/.extraheader=",
+            "-c",
             f"http.https://github.com/.extraheader={extra_header}",
             "push",
             "origin",
