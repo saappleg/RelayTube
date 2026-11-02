@@ -13,7 +13,7 @@ import tempfile
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path(__file__).resolve().parents[1])).resolve()
 RELAYTUBE_REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "saappleg/RelayTube")
 SMARTTUBE_REPOSITORY = "yuliskov/SmartTube"
 UPSTREAM_ROOT_URL = "https://github.com/yuliskov/SmartTube.git"
