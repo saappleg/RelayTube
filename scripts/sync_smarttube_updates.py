@@ -54,16 +54,13 @@ def git(args: list[str], cwd: Path = ROOT, *, check: bool = True) -> str:
     return run(["git", *args], cwd, check=check)
 
 
-def git_commit(message: str, cwd: Path = ROOT) -> None:
+def configure_git_identity(cwd: Path = ROOT) -> None:
+    git(["config", "user.name", "github-actions[bot]"], cwd)
     git(
         [
-            "-c",
-            "user.name=github-actions[bot]",
-            "-c",
-            "user.email=41898282+github-actions[bot]@users.noreply.github.com",
-            "commit",
-            "-m",
-            message,
+            "config",
+            "user.email",
+            "41898282+github-actions[bot]@users.noreply.github.com",
         ],
         cwd,
     )
@@ -119,6 +116,7 @@ def sync_module(path: Path, name: str, channel: str, source_ref: str) -> str:
 
     git(["fetch", "origin", f"refs/heads/{branch}:refs/remotes/origin/{branch}"], path)
     git(["checkout", "--detach", f"refs/remotes/origin/{branch}"], path)
+    configure_git_identity(path)
     git(["submodule", "sync", "--recursive"], path)
     git(["submodule", "update", "--init", "--recursive"], path)
     git(["fetch", "--no-tags", info["upstream"], source_ref], path)
@@ -164,7 +162,7 @@ def sync_module(path: Path, name: str, channel: str, source_ref: str) -> str:
 
         git(["submodule", "sync", "--recursive"], path)
         git(["submodule", "update", "--init", "--recursive"], path)
-        git_commit(f"Merge SmartTube {name} {channel} updates", path)
+        git(["commit", "-m", f"Merge SmartTube {name} {channel} updates"], path)
 
     git(["submodule", "sync", "--recursive"], path)
     git(["submodule", "update", "--init", "--recursive"], path)
@@ -219,6 +217,7 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
     branch = CHANNELS[channel]
     git(["fetch", "origin", f"refs/heads/{branch}:refs/remotes/origin/{branch}"])
     git(["checkout", "--detach", f"refs/remotes/origin/{branch}"])
+    configure_git_identity()
     git(["submodule", "sync", "--recursive"])
     git(["submodule", "update", "--init", "--recursive"])
 
@@ -275,7 +274,7 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
         message = f"Merge SmartTube {channel} updates into RelayTube"
     else:
         message = f"Update RelayTube {channel} media modules"
-    git_commit(message)
+    git(["commit", "-m", message])
     git(["push", "origin", f"HEAD:refs/heads/{branch}"])
     return True, git(["rev-parse", "HEAD"])
 
