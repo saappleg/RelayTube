@@ -54,6 +54,21 @@ def git(args: list[str], cwd: Path = ROOT, *, check: bool = True) -> str:
     return run(["git", *args], cwd, check=check)
 
 
+def git_commit(message: str, cwd: Path = ROOT) -> None:
+    git(
+        [
+            "-c",
+            "user.name=github-actions[bot]",
+            "-c",
+            "user.email=41898282+github-actions[bot]@users.noreply.github.com",
+            "commit",
+            "-m",
+            message,
+        ],
+        cwd,
+    )
+
+
 def is_ancestor(older: str, newer: str, cwd: Path) -> bool:
     result = subprocess.run(
         ["git", "merge-base", "--is-ancestor", older, newer],
@@ -149,7 +164,7 @@ def sync_module(path: Path, name: str, channel: str, source_ref: str) -> str:
 
         git(["submodule", "sync", "--recursive"], path)
         git(["submodule", "update", "--init", "--recursive"], path)
-        git(["commit", "-m", f"Merge SmartTube {name} {channel} updates"], path)
+        git_commit(f"Merge SmartTube {name} {channel} updates", path)
 
     git(["submodule", "sync", "--recursive"], path)
     git(["submodule", "update", "--init", "--recursive"], path)
@@ -260,7 +275,7 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
         message = f"Merge SmartTube {channel} updates into RelayTube"
     else:
         message = f"Update RelayTube {channel} media modules"
-    git(["commit", "-m", message])
+    git_commit(message)
     git(["push", "origin", f"HEAD:refs/heads/{branch}"])
     return True, git(["rev-parse", "HEAD"])
 
