@@ -55,32 +55,33 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             // Long loading subtitles cause hangs
             disableSubtitles();
             mVideoLoaderController.reloadVideo();
-        } else if (!mBufferingDetector.isPlayable()) {
-            if (isOfflineVideo()) {
-                int requiredEngine = PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP;
-                int customDns = PlayerTweaksData.DNS_TYPE_IPV4;
-                boolean isCustomEngineEnabled = getPlayerTweaksData().getPlayerDataSource() == requiredEngine;
-                boolean isCustomDnsEnabled = getPlayerTweaksData().getPreferredDnsType() == customDns;
-                boolean isCustomDnsActive = isCustomEngineEnabled && isCustomDnsEnabled;
-                if (!isCustomDnsActive && !getPlayerTweaksData().isNetworkErrorFixingDisabled()) {
-                    // Wrong DNS resolving could cause hanging at start
-                    // Do switch to only engine that respects custom DNS settings
-                    MessageHelpers.showLongMessage(getContext(), "Fixing incorrect DNS resolution. App restart needed...");
-                    getPlayerTweaksData().setPlayerDataSource(requiredEngine);
-                    getPlayerTweaksData().setPreferredDnsType(customDns);
-                    if (!isCustomDnsEnabled) {
-                        // Restart app to reinit OkHttp internal objects
-                        Utils.restartTheApp(getContext());
-                    } else {
-                        mVideoLoaderController.restartEngine();
-                    }
+        } else if (isOfflineVideo() && !mBufferingDetector.isPlayable()) {
+            int requiredEngine = PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP;
+            int customDns = PlayerTweaksData.DNS_TYPE_IPV4;
+            boolean isCustomEngineEnabled = getPlayerTweaksData().getPlayerDataSource() == requiredEngine;
+            boolean isCustomDnsEnabled = getPlayerTweaksData().getPreferredDnsType() == customDns;
+            boolean isCustomDnsActive = isCustomEngineEnabled && isCustomDnsEnabled;
+            if (getPlayer().getPositionMs() == 0 && !isCustomDnsActive && !getPlayerTweaksData().isNetworkErrorFixingDisabled()) {
+                // Exclude possible PoToken errors. Upon resume there's no 60 sec PoToken attestation window, so a resumed video fails instantly.
+                // Wrong DNS resolving could cause hanging at start
+                // Do switch to only engine that respects custom DNS settings
+                MessageHelpers.showLongMessage(getContext(), "Fixing incorrect DNS resolution. App restart needed...");
+                getPlayerTweaksData().setPlayerDataSource(requiredEngine);
+                getPlayerTweaksData().setPreferredDnsType(customDns);
+                if (!isCustomDnsEnabled) {
+                    // Restart app to reinit OkHttp internal objects
+                    Utils.restartTheApp(getContext());
                 } else {
-                    // Also, some clients like ANDROID_REEL may just hang at start
-                    MessageHelpers.showLongMessage(getContext(), "Fixing stalled client...");
-                    YouTubeServiceManager.instance().switchNextClientNow();
-                    mVideoLoaderController.reloadVideo();
+                    mVideoLoaderController.restartEngine();
                 }
-            } else if (getPlayerTweaksData().getPlayerDataSource() != PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP
+            } else {
+                // Also, some clients like ANDROID_REEL may just hang at start
+                MessageHelpers.showLongMessage(getContext(), "Fixing stalled client...");
+                YouTubeServiceManager.instance().switchNextClientNow();
+                mVideoLoaderController.reloadVideo();
+            }
+        } else if (!isOfflineVideo() && !mBufferingDetector.isPlayable()) {
+            if (getPlayerTweaksData().getPlayerDataSource() != PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP
                     && getPlayerTweaksData().getPreferredDnsType() != PlayerTweaksData.DNS_TYPE_SYSTEM
                     && !getPlayerTweaksData().isNetworkErrorFixingDisabled()) {
                 // Preserve RelayTube's custom-DNS recovery for online playback.
