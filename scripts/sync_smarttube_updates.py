@@ -39,6 +39,10 @@ CHANNELS = {
     "beta": "codex/relaytube-release-next",
     "stable": "codex/relaytube-stable",
 }
+ERROR_FIXER_CONTROLLER_PATH = (
+    "common/src/main/java/com/liskovsoft/smartyoutubetv2/common/app/models/"
+    "playback/controllers/ErrorFixerController.java"
+)
 SYNC_TOKEN = os.environ.get("UPSTREAM_SYNC_TOKEN", "")
 
 
@@ -191,6 +195,90 @@ def preserve_relaytube_version_override() -> None:
     git(["add", "smarttubetv/build.gradle"])
 
 
+def merge_relaytube_error_fixer_contents(upstream_contents: str, relaytube_contents: str) -> str:
+    newline = "\r\n" if "\r\n" in upstream_contents else "\n"
+    contents = upstream_contents.replace("\r\n", "\n")
+    relaytube = relaytube_contents.replace("\r\n", "\n")
+
+    dns_pattern = re.compile(
+        r"(?m)^([ \t]*)int customDns = PlayerTweaksData\.(DNS_TYPE_[A-Z0-9_]+);$"
+    )
+    upstream_dns = dns_pattern.findall(contents)
+    relaytube_dns = dns_pattern.findall(relaytube)
+    if len(upstream_dns) != 1 or len(relaytube_dns) != 1:
+        raise RuntimeError(
+            "Unexpected ErrorFixerController DNS setting; refusing automatic conflict resolution"
+        )
+    relaytube_dns_type = relaytube_dns[0][1]
+    contents, replacements = dns_pattern.subn(
+        lambda match: (
+            f"{match.group(1)}int customDns = PlayerTweaksData.{relaytube_dns_type};"
+        ),
+        contents,
+        count=1,
+    )
+    if replacements != 1:
+        raise RuntimeError(
+            "Could not preserve RelayTube ErrorFixerController DNS setting"
+        )
+
+    fallback = (
+        "        } else {\n"
+        "            // NOTE: The bug. Avoid calling reloadVideo() after lowering the quality.\n"
+    )
+    if contents.count(fallback) != 1:
+        raise RuntimeError(
+            "Unexpected upstream ErrorFixerController layout; refusing automatic conflict resolution"
+        )
+
+    relaytube_recovery = """        } else if (!isOfflineVideo() && !mBufferingDetector.isPlayable()) {
+            if (getPlayerTweaksData().getPlayerDataSource() != PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP
+                    && getPlayerTweaksData().getPreferredDnsType() != PlayerTweaksData.DNS_TYPE_SYSTEM
+                    && !getPlayerTweaksData().isNetworkErrorFixingDisabled()) {
+                // Preserve RelayTube's custom-DNS recovery for online playback.
+                MessageHelpers.showLongMessage(getContext(), "Fixing wrong DNS resolving...");
+                getPlayerTweaksData().setPlayerDataSource(PlayerTweaksData.PLAYER_DATA_SOURCE_OKHTTP);
+                mVideoLoaderController.restartEngine();
+            } else {
+                // Some clients may just hang at the video start
+                MessageHelpers.showLongMessage(getContext(), "Fixing stalled client...");
+                YouTubeServiceManager.instance().switchNextClientNow();
+                mVideoLoaderController.reloadVideo();
+            }
+"""
+    contents = contents.replace(fallback, relaytube_recovery + fallback, 1)
+    return contents.replace("\n", "\r\n") if newline == "\r\n" else contents
+
+
+def resolve_relaytube_error_fixer_conflict(source_commit: str) -> None:
+    revisions = (
+        (source_commit, "upstream"),
+        ("HEAD", "RelayTube"),
+    )
+    contents_by_source: dict[str, str] = {}
+    for revision, source_name in revisions:
+        result = subprocess.run(
+            ["git", "show", f"{revision}:{ERROR_FIXER_CONTROLLER_PATH}"],
+            cwd=ROOT,
+            capture_output=True,
+        )
+        if result.returncode:
+            details = result.stderr.decode("utf-8", errors="replace").strip()
+            raise RuntimeError(
+                f"Could not read {source_name} ErrorFixerController.java: {details}"
+            )
+        contents_by_source[source_name] = result.stdout.decode("utf-8")
+
+    contents = merge_relaytube_error_fixer_contents(
+        contents_by_source["upstream"], contents_by_source["RelayTube"]
+    )
+    destination = ROOT / ERROR_FIXER_CONTROLLER_PATH
+    with destination.open("w", encoding="utf-8", newline="") as output:
+        output.write(contents)
+    git(["add", ERROR_FIXER_CONTROLLER_PATH])
+    print("Preserved RelayTube DNS recovery in ErrorFixerController.java.")
+
+
 def set_fork_module_urls() -> None:
     git(
         [
@@ -231,7 +319,13 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
             capture_output=True,
         )
         conflicts = git(["diff", "--name-only", "--diff-filter=U"]).splitlines()
-        allowed = {".gitmodules", "smarttubetv/build.gradle", "MediaServiceCore", "SharedModules"}
+        allowed = {
+            ".gitmodules",
+            "smarttubetv/build.gradle",
+            "MediaServiceCore",
+            "SharedModules",
+            ERROR_FIXER_CONTROLLER_PATH,
+        }
         unexpected = [item for item in conflicts if item not in allowed]
         if unexpected:
             raise RuntimeError(f"Unresolved RelayTube {channel} conflicts: {', '.join(unexpected)}")
@@ -243,6 +337,8 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
             git(["add", ".gitmodules"])
         if "smarttubetv/build.gradle" in conflicts:
             preserve_relaytube_version_override()
+        if ERROR_FIXER_CONTROLLER_PATH in conflicts:
+            resolve_relaytube_error_fixer_conflict(source_commit)
 
     set_fork_module_urls()
     for name, commit in module_commits.items():
