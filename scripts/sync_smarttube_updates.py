@@ -43,6 +43,14 @@ ERROR_FIXER_CONTROLLER_PATH = (
     "common/src/main/java/com/liskovsoft/smartyoutubetv2/common/app/models/"
     "playback/controllers/ErrorFixerController.java"
 )
+EXO_PLAYER_CONTROLLER_PATH = (
+    "common/src/main/java/com/liskovsoft/smartyoutubetv2/common/exoplayer/"
+    "controller/ExoPlayerController.java"
+)
+RELAYTUBE_LAYOUT_PATHS = (
+    "smarttubetv/src/main/res/layout/leanback_list_preference_item_single.xml",
+    "smarttubetv/src/main/res/layout/leanback_preference.xml",
+)
 SYNC_TOKEN = os.environ.get("UPSTREAM_SYNC_TOKEN", "")
 
 
@@ -195,6 +203,24 @@ def preserve_relaytube_version_override() -> None:
     git(["add", "smarttubetv/build.gradle"])
 
 
+def replace_exactly_once(contents: str, old: str, new: str, description: str) -> str:
+    if contents.count(old) != 1:
+        raise RuntimeError(f"Unexpected {description}; refusing automatic conflict resolution")
+    return contents.replace(old, new, 1)
+
+
+def git_file_contents(revision: str, path: str, source_name: str) -> str:
+    result = subprocess.run(
+        ["git", "show", f"{revision}:{path}"],
+        cwd=ROOT,
+        capture_output=True,
+    )
+    if result.returncode:
+        details = result.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"Could not read {source_name} {path}: {details}")
+    return result.stdout.decode("utf-8")
+
+
 def merge_relaytube_error_fixer_contents(upstream_contents: str, relaytube_contents: str) -> str:
     newline = "\r\n" if "\r\n" in upstream_contents else "\n"
     contents = upstream_contents.replace("\r\n", "\n")
@@ -218,9 +244,7 @@ def merge_relaytube_error_fixer_contents(upstream_contents: str, relaytube_conte
         count=1,
     )
     if replacements != 1:
-        raise RuntimeError(
-            "Could not preserve RelayTube ErrorFixerController DNS setting"
-        )
+        raise RuntimeError("Could not preserve RelayTube ErrorFixerController DNS setting")
 
     fallback = (
         "        } else {\n"
@@ -251,32 +275,187 @@ def merge_relaytube_error_fixer_contents(upstream_contents: str, relaytube_conte
 
 
 def resolve_relaytube_error_fixer_conflict(source_commit: str) -> None:
-    revisions = (
-        (source_commit, "upstream"),
-        ("HEAD", "RelayTube"),
-    )
-    contents_by_source: dict[str, str] = {}
-    for revision, source_name in revisions:
-        result = subprocess.run(
-            ["git", "show", f"{revision}:{ERROR_FIXER_CONTROLLER_PATH}"],
-            cwd=ROOT,
-            capture_output=True,
-        )
-        if result.returncode:
-            details = result.stderr.decode("utf-8", errors="replace").strip()
-            raise RuntimeError(
-                f"Could not read {source_name} ErrorFixerController.java: {details}"
-            )
-        contents_by_source[source_name] = result.stdout.decode("utf-8")
-
-    contents = merge_relaytube_error_fixer_contents(
-        contents_by_source["upstream"], contents_by_source["RelayTube"]
-    )
+    upstream = git_file_contents(source_commit, ERROR_FIXER_CONTROLLER_PATH, "upstream")
+    relaytube = git_file_contents("HEAD", ERROR_FIXER_CONTROLLER_PATH, "RelayTube")
+    contents = merge_relaytube_error_fixer_contents(upstream, relaytube)
     destination = ROOT / ERROR_FIXER_CONTROLLER_PATH
     with destination.open("w", encoding="utf-8", newline="") as output:
         output.write(contents)
     git(["add", ERROR_FIXER_CONTROLLER_PATH])
     print("Preserved RelayTube DNS recovery in ErrorFixerController.java.")
+
+
+def merge_relaytube_exoplayer_diagnostics(upstream_contents: str, relaytube_contents: str) -> str:
+    newline = "\r\n" if "\r\n" in upstream_contents else "\n"
+    contents = upstream_contents.replace("\r\n", "\n")
+    relaytube = relaytube_contents.replace("\r\n", "\n")
+    diagnostic_markers = (
+        "mPrepareStartedAtMs",
+        "Playback startup: prepare requested",
+        "Playback startup: ready in ",
+        "elapsedSincePrepare(long nowMs)",
+    )
+    if not all(marker in relaytube for marker in diagnostic_markers):
+        raise RuntimeError(
+            "RelayTube ExoPlayer startup diagnostics changed; refusing automatic conflict resolution"
+        )
+    if any(marker in contents for marker in diagnostic_markers):
+        if all(marker in contents for marker in diagnostic_markers):
+            return contents.replace("\n", "\r\n") if newline == "\r\n" else contents
+        raise RuntimeError(
+            "Upstream ExoPlayer startup diagnostics are partial; refusing automatic conflict resolution"
+        )
+
+    contents = replace_exactly_once(
+        contents,
+        "import android.os.Build.VERSION;\n",
+        "import android.os.Build.VERSION;\nimport android.os.SystemClock;\n",
+        "ExoPlayerController imports",
+    )
+    fields = (
+        "    private long mPrepareStartedAtMs;\n"
+        "    private long mFirstBufferingAtMs;\n"
+        "    private long mFirstTracksAtMs;\n"
+        "    private long mFirstLoadingFinishedAtMs;\n"
+        "    private boolean mStartupReported;\n"
+    )
+    contents = replace_exactly_once(
+        contents,
+        "    private Runnable mOnVideoLoaded;\n",
+        "    private Runnable mOnVideoLoaded;\n" + fields,
+        "ExoPlayerController diagnostic fields",
+    )
+    contents = replace_exactly_once(
+        contents,
+        "        mSabrLiveManifest = null; // set by the sabr live only\n"
+        "        mSabrLiveSeekBlocked = false;\n"
+        "        mSabrLiveStartPending = false;\n",
+        "        mSabrLiveManifest = null; // set by the sabr live only\n"
+        "        mSabrLiveSeekBlocked = false;\n"
+        "        mSabrLiveStartPending = false;\n"
+        "        mPrepareStartedAtMs = SystemClock.elapsedRealtime();\n"
+        "        mFirstBufferingAtMs = 0;\n"
+        "        mFirstTracksAtMs = 0;\n"
+        "        mFirstLoadingFinishedAtMs = 0;\n"
+        "        mStartupReported = false;\n",
+        "ExoPlayerController source reset",
+    )
+    contents = replace_exactly_once(
+        contents,
+        "        mEventListener.onSourceChanged(getVideo());\n",
+        "        mEventListener.onSourceChanged(getVideo());\n"
+        "        Log.d(TAG, \"Playback startup: prepare requested\");\n",
+        "ExoPlayerController prepare log",
+    )
+    contents = replace_exactly_once(
+        contents,
+        '        Log.d(TAG, "onTracksChanged: start: groups length: " + trackGroups.length);\n',
+        "        if (mPrepareStartedAtMs > 0 && mFirstTracksAtMs == 0) {\n"
+        "            mFirstTracksAtMs = SystemClock.elapsedRealtime();\n"
+        "            Log.d(TAG, \"Playback startup: tracks in \" + elapsedSincePrepare(mFirstTracksAtMs) + \"ms\");\n"
+        "        }\n"
+        '        Log.d(TAG, "onTracksChanged: start: groups length: " + trackGroups.length);\n',
+        "ExoPlayerController track log",
+    )
+    contents = replace_exactly_once(
+        contents,
+        '        Log.e(TAG, "onPlayerError: " + error);\n',
+        "        Log.e(TAG, \"Playback startup: failed after \" + elapsedSincePrepare(SystemClock.elapsedRealtime()) + \"ms: \" + error);\n"
+        '        Log.e(TAG, "onPlayerError: " + error);\n',
+        "ExoPlayerController error log",
+    )
+    buffering_marker = (
+        "        boolean isBuffering = Player.STATE_BUFFERING == playbackState && playWhenReady;\n"
+    )
+    startup_metrics = """        if (isBuffering && mPrepareStartedAtMs > 0 && mFirstBufferingAtMs == 0) {
+            mFirstBufferingAtMs = SystemClock.elapsedRealtime();
+            Log.d(TAG, "Playback startup: buffering in " + elapsedSincePrepare(mFirstBufferingAtMs) + "ms");
+        }
+
+        if (isPlayPressed && mPrepareStartedAtMs > 0 && !mStartupReported) {
+            mStartupReported = true;
+            long now = SystemClock.elapsedRealtime();
+            String buffering = mFirstBufferingAtMs > 0
+                    ? String.valueOf(mFirstBufferingAtMs - mPrepareStartedAtMs)
+                    : "not observed";
+            String tracks = mFirstTracksAtMs > 0
+                    ? String.valueOf(mFirstTracksAtMs - mPrepareStartedAtMs)
+                    : "not observed";
+            String loadingFinished = mFirstLoadingFinishedAtMs > 0
+                    ? String.valueOf(mFirstLoadingFinishedAtMs - mPrepareStartedAtMs)
+                    : "still loading";
+            long bufferedAheadMs = mPlayer != null
+                    ? Math.max(0, mPlayer.getBufferedPosition() - mPlayer.getCurrentPosition())
+                    : 0;
+            Log.d(TAG, "Playback startup: ready in " + elapsedSincePrepare(now)
+                    + "ms (buffering=" + buffering + "ms, tracks=" + tracks
+                    + "ms, loading=" + loadingFinished + "ms, bufferedAhead=" + bufferedAheadMs + "ms)");
+        }
+
+"""
+    contents = replace_exactly_once(
+        contents,
+        buffering_marker,
+        buffering_marker + startup_metrics,
+        "ExoPlayerController state metrics",
+    )
+    loading_method = """    @Override
+    public void onLoadingChanged(boolean isLoading) {
+        if (!isLoading && mPrepareStartedAtMs > 0 && mFirstLoadingFinishedAtMs == 0) {
+            mFirstLoadingFinishedAtMs = SystemClock.elapsedRealtime();
+            Log.d(TAG, "Playback startup: initial loading finished in "
+                    + elapsedSincePrepare(mFirstLoadingFinishedAtMs) + "ms");
+        }
+    }
+
+    private long elapsedSincePrepare(long nowMs) {
+        return mPrepareStartedAtMs > 0 ? Math.max(0, nowMs - mPrepareStartedAtMs) : 0;
+    }
+
+"""
+    if "public void onLoadingChanged(boolean isLoading)" in contents:
+        raise RuntimeError(
+            "Upstream ExoPlayer loading callback changed; refusing automatic conflict resolution"
+        )
+    contents = replace_exactly_once(
+        contents,
+        "    @Override\n    public void onPositionDiscontinuity(int reason) {\n",
+        loading_method + "    @Override\n    public void onPositionDiscontinuity(int reason) {\n",
+        "ExoPlayerController loading callback",
+    )
+    return contents.replace("\n", "\r\n") if newline == "\r\n" else contents
+
+
+def resolve_relaytube_exoplayer_conflict(source_commit: str) -> None:
+    upstream = git_file_contents(source_commit, EXO_PLAYER_CONTROLLER_PATH, "upstream")
+    relaytube = git_file_contents("HEAD", EXO_PLAYER_CONTROLLER_PATH, "RelayTube")
+    contents = merge_relaytube_exoplayer_diagnostics(upstream, relaytube)
+    destination = ROOT / EXO_PLAYER_CONTROLLER_PATH
+    with destination.open("w", encoding="utf-8", newline="") as output:
+        output.write(contents)
+    git(["add", EXO_PLAYER_CONTROLLER_PATH])
+    print("Preserved RelayTube playback startup diagnostics with upstream SABR live support.")
+
+
+def merge_relaytube_layout_contents(upstream_contents: str, relaytube_contents: str, path: str) -> str:
+    upstream_ids = re.findall(r'\bandroid:id="([^"]+)"', upstream_contents)
+    relaytube_ids = re.findall(r'\bandroid:id="([^"]+)"', relaytube_contents)
+    if not upstream_ids or sorted(upstream_ids) != sorted(relaytube_ids):
+        raise RuntimeError(
+            f"Upstream preference layout IDs changed in {path}; refusing automatic conflict resolution"
+        )
+    return relaytube_contents
+
+
+def resolve_relaytube_layout_conflict(source_commit: str, path: str) -> None:
+    upstream = git_file_contents(source_commit, path, "upstream")
+    relaytube = git_file_contents("HEAD", path, "RelayTube")
+    contents = merge_relaytube_layout_contents(upstream, relaytube, path)
+    destination = ROOT / path
+    with destination.open("w", encoding="utf-8", newline="") as output:
+        output.write(contents)
+    git(["add", path])
+    print(f"Preserved RelayTube preference styling in {Path(path).name}.")
 
 
 def set_fork_module_urls() -> None:
@@ -325,6 +504,8 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
             "MediaServiceCore",
             "SharedModules",
             ERROR_FIXER_CONTROLLER_PATH,
+            EXO_PLAYER_CONTROLLER_PATH,
+            *RELAYTUBE_LAYOUT_PATHS,
         }
         unexpected = [item for item in conflicts if item not in allowed]
         if unexpected:
@@ -339,6 +520,11 @@ def sync_app_channel(channel: str, source_commit: str, module_commits: dict[str,
             preserve_relaytube_version_override()
         if ERROR_FIXER_CONTROLLER_PATH in conflicts:
             resolve_relaytube_error_fixer_conflict(source_commit)
+        if EXO_PLAYER_CONTROLLER_PATH in conflicts:
+            resolve_relaytube_exoplayer_conflict(source_commit)
+        for path in RELAYTUBE_LAYOUT_PATHS:
+            if path in conflicts:
+                resolve_relaytube_layout_conflict(source_commit, path)
 
     set_fork_module_urls()
     for name, commit in module_commits.items():
@@ -472,6 +658,31 @@ def latest_stable_release_tag() -> str | None:
     return latest["tagName"]
 
 
+def release_contains_sources(tag: str, source_commits: list[str]) -> bool:
+    result = subprocess.run(
+        [
+            "gh",
+            "release",
+            "view",
+            tag,
+            "--repo",
+            RELAYTUBE_REPOSITORY,
+            "--json",
+            "body",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+    if result.returncode:
+        details = (result.stderr or result.stdout).strip()
+        if "release not found" in details.lower():
+            return False
+        raise RuntimeError(f"Could not inspect RelayTube release {tag}: {details}")
+    body = json.loads(result.stdout).get("body") or ""
+    return all(commit[:12] in body for commit in source_commits)
+
+
 def suffixed_version(base: str, previous_name: str | None) -> str:
     match = re.fullmatch(re.escape(base) + r"\.(\d+)", previous_name or "")
     suffix = int(match.group(1)) + 1 if match else 1
@@ -516,33 +727,64 @@ def main() -> int:
     beta_changed, beta_commit = sync_app_channel("beta", beta_source, module_commits["beta"])
     stable_changed, stable_commit = sync_app_channel("stable", stable_source, module_commits["stable"])
 
-    set_output("beta_changed", beta_changed)
-    set_output("stable_changed", stable_changed)
+    beta_upstream_name, beta_upstream_code = upstream_version(beta_source)
+    beta_previous_code, beta_previous_name = release_manifest("relaytube-beta")
+    beta_release_sources = [
+        beta_commit,
+        beta_source,
+        module_commits["beta"]["MediaServiceCore"],
+        module_commits["beta"]["SharedModules"],
+    ]
+    beta_needs_release = beta_changed or not release_contains_sources(
+        "relaytube-beta", beta_release_sources
+    )
+
+    previous_stable_tag = latest_stable_release_tag()
+    stable_previous_code, stable_previous_name = (
+        release_manifest(previous_stable_tag) if previous_stable_tag else (0, None)
+    )
+    stable_release_sources = [
+        stable_commit,
+        stable_source,
+        module_commits["stable"]["MediaServiceCore"],
+        module_commits["stable"]["SharedModules"],
+    ]
+    stable_needs_release = stable_changed or not (
+        previous_stable_tag
+        and release_contains_sources(previous_stable_tag, stable_release_sources)
+    )
+
+    set_output("beta_changed", beta_needs_release)
+    set_output("stable_changed", stable_needs_release)
     set_output("beta_source_ref", CHANNELS["beta"])
     set_output("stable_source_ref", CHANNELS["stable"])
 
-    if beta_changed:
-        upstream_name, upstream_code = upstream_version(beta_source)
-        previous_code, previous_name = release_manifest("relaytube-beta")
-        beta_name = suffixed_version(f"{upstream_name}-beta", previous_name)
+    if beta_needs_release:
+        beta_name = suffixed_version(f"{beta_upstream_name}-beta", beta_previous_name)
         set_output("beta_version_name", beta_name)
-        set_output("beta_version_code", max(upstream_code, previous_code + 1, 2435))
+        set_output("beta_version_code", max(beta_upstream_code, beta_previous_code + 1, 2435))
         set_output(
             "beta_release_notes",
-            f"Synced SmartTube beta {upstream_name} ({beta_source[:12]}), MediaServiceCore, and SharedModules.",
+            f"RelayTube beta {beta_commit[:12]} synced SmartTube beta {beta_upstream_name} "
+            f"({beta_source[:12]}), MediaServiceCore "
+            f"{module_commits['beta']['MediaServiceCore'][:12]}, and SharedModules "
+            f"{module_commits['beta']['SharedModules'][:12]}.",
         )
         print(f"RelayTube beta source: {beta_commit}")
 
-    if stable_changed:
-        upstream_name, upstream_code = upstream_version(stable_source)
-        previous_tag = latest_stable_release_tag()
-        previous_code, previous_name = release_manifest(previous_tag) if previous_tag else (0, None)
-        stable_name = suffixed_version(stable_tag, previous_name)
+    if stable_needs_release:
+        stable_name = suffixed_version(stable_tag, stable_previous_name)
         set_output("stable_version_name", stable_name)
-        set_output("stable_version_code", max(upstream_code, previous_code + 1, 2435))
+        set_output(
+            "stable_version_code",
+            max(upstream_version(stable_source)[1], stable_previous_code + 1, 2435),
+        )
         set_output(
             "stable_release_notes",
-            f"Synced SmartTube stable {stable_tag} ({stable_source[:12]}), MediaServiceCore, and SharedModules.",
+            f"RelayTube stable {stable_commit[:12]} synced SmartTube stable {stable_tag} "
+            f"({stable_source[:12]}), MediaServiceCore "
+            f"{module_commits['stable']['MediaServiceCore'][:12]}, and SharedModules "
+            f"{module_commits['stable']['SharedModules'][:12]}.",
         )
         print(f"RelayTube stable source: {stable_commit}")
 
